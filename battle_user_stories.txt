@@ -6,7 +6,7 @@ As a player, I want multiple paths with varying lengths.
 
 Acceptance Criteria:
 The game generates 2 paths for basic fight, 3 for medium and 4 for advanced fight.
-Each path has a random number of nodes within defined limits.
+Each path has a randomized number of nodes within defined limits: minimum 3 and maximum 5 nodes.
 Each path has a first node for player placement and a last node for enemy spawning.
 
 2. Enemy Spawning
