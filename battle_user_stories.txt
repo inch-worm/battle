@@ -1,0 +1,132 @@
+Battle System User Stories
+
+1. Path Generation
+User Story:
+As a player, I want multiple paths with varying lengths.
+
+Acceptance Criteria:
+The game generates 2 paths for basic fight, 3 for medium and 4 for advanced fight.
+Each path has a random number of nodes within defined limits.
+Each path has a first node for player placement and a last node for enemy spawning.
+
+2. Enemy Spawning
+User Story:
+As a player, I want enemies to spawn at the end of each path.
+
+Acceptance Criteria:
+Enemies spawn on the last node of each path.
+If the last node is occupied by player units, enemies do not spawn.
+Enemy spawn is delayed until the last node becomes empty.
+Multiple enemy groups on the same node merge into one.
+
+3. Player Unit Placement
+User Story:
+As a player, I want to place units at the beginning of each path.
+
+Acceptance Criteria:
+Player units can only be placed on the first node.
+Player can choose from 10 unit types.
+Multiple player units on the same node merge into one division.
+
+4. Node Ownership
+User Story:
+As a player, I want each node to contain only one side.
+
+Acceptance Criteria:
+A node can contain either player units or enemy units.
+A node cannot contain both after combat resolution.
+
+5. Turn Based Movement
+User Story:
+As a player, I want all units to move automatically each turn.
+
+Acceptance Criteria:
+On each turn, player units move one node toward the end.
+On each turn, enemy units move one node toward the beginning.
+Movement happens simultaneously.
+
+6. Collision and Combat Trigger
+User Story:
+As a player, I want combat to occur when units meet.
+
+Acceptance Criteria:
+Combat starts when a unit tries to enter a node occupied by the opposing side.
+Combat starts if both sides try to move into the same node. In that case enemy units move first into the conflicted node and battle begins.
+Units cannot pass through each other.
+Units stop moving when combat begins.
+
+7. Combat Resolution
+User Story:
+As a player, I want combat to resolve automatically based on stats.
+
+Acceptance Criteria:
+Combat resolves once per turn.
+Damage is applied simultaneously to both sides.
+Health persists between turns.
+If both sides survive, combat continues next turn.
+If one side dies, its node becomes empty and the other remains on its node.
+If both die, both nodes become empty.
+If multiple unit types are present in a division, damage is applied in order based on the unit parameter "orderInFight" (unique value for each unit type).
+Units with lower "orderInFight" value receive damage first.
+When a unit type is destroyed, remaining damage is applied to the next unit type in order.
+This rule applies to both player and enemy units.
+
+8. First Node Rules
+User Story:
+As a player, I want my base node for each path to be protected.
+
+Acceptance Criteria:
+The first node (at the beginning) on each path can only contain player units.
+Enemy units can never enter the first node.
+If an enemy attempts to move from node 2 to node 1 and player units are present, combat occurs.
+If no player units are present, the enemy does not move and instead deals damage to the player.
+
+9. Player Health and Damage
+User Story:
+As a player, I want to lose health when enemies break through.
+
+Acceptance Criteria:
+Player starts with 10000 health.
+When an enemy attempts to move into the first node and it is empty, the player takes damage.
+Enemy remains on the second node after dealing damage.
+
+10. Player Unit Return
+User Story:
+As a player, I want my surviving units to return after reaching the end.
+
+Acceptance Criteria:
+When player units reach the last node, they are removed from the path
+Returned units keep their remaining health.
+Returned units go back to the player army pool.
+Returned units can only be used in the next turn.
+
+11. No Healing
+User Story:
+As a player, I want unit damage to persist.
+
+Acceptance Criteria:
+Units do not recover health automatically even after all of the enemies are defeated.
+Units keep their exact health values across turns.
+
+12. Turn Flow
+User Story:
+As a player, I want a consistent turn sequence.
+
+Acceptance Criteria:
+Movement phase
+Merge phase
+Collision detection
+Combat resolution
+Cleanup phase
+Return phase
+Enemy spawn phase
+Player received damage check
+
+13. End of battle
+User Story:
+As a player, I want a game to end when I run out of hp or I defeat all of the enemies.
+
+Acceptance Criteria:
+If player loses all of his hp the battle counts as a loss.
+If player defeats all of the waves and still has hp left, the battle counts as a win.
+Player's hp also does not regenerate automatically after the battle.

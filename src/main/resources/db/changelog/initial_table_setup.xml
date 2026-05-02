@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+		http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+		http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+    <changeSet id="initial_table_setup" author="adao">
+        <createTable tableName="resource">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="source_of_resource">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="resource_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="production_increase_per_level" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="source_of_resource" baseColumnNames="resource_id"
+                                 referencedTableName="resource" referencedColumnNames="id"
+                                 constraintName="fk_source_of_resource_resource_id"/>
+        <createTable tableName="source_of_resource_cost">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_source_of_resource_cost"/>
+            </column>
+            <column name="resource_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="source_of_resource_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="amount" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cost_increase_per_level" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="resource_id" baseTableName="source_of_resource_cost" constraintName="FK_SOURCE_OF_RESOURCE_COST_ON_RESOURCE" referencedColumnNames="id" referencedTableName="resource"/>
+        <addForeignKeyConstraint baseColumnNames="source_of_resource_id" baseTableName="source_of_resource_cost" constraintName="FK_SOURCE_OF_RESOURCE_COST_ON_SOURCE_OF_RESOURCE" referencedColumnNames="id" referencedTableName="source_of_resource"/>
+        <createTable tableName="player">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_player"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint columnNames="name" constraintName="uc_player_name" tableName="player"/>
+        <createTable tableName="player_resource">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_player_resource"/>
+            </column>
+            <column name="player_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="resource_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="amount" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="player_id" baseTableName="player_resource" constraintName="FK_PLAYER_RESOURCE_ON_PLAYER" referencedColumnNames="id" referencedTableName="player"/>
+        <addForeignKeyConstraint baseColumnNames="resource_id" baseTableName="player_resource" constraintName="FK_PLAYER_RESOURCE_ON_RESOURCE" referencedColumnNames="id" referencedTableName="resource"/>
+        <createTable tableName="player_source_of_resource">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_player_source_of_resource"/>
+            </column>
+            <column name="source_of_resource_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="player_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="current_level" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="player_id" baseTableName="player_source_of_resource" constraintName="FK_PLAYER_SOURCE_OF_RESOURCE_ON_PLAYER" referencedColumnNames="id" referencedTableName="player"/>
+        <addForeignKeyConstraint baseColumnNames="source_of_resource_id" baseTableName="player_source_of_resource" constraintName="FK_PLAYER_SOURCE_OF_RESOURCE_ON_SOURCE_OF_RESOURCE" referencedColumnNames="id" referencedTableName="source_of_resource"/>
+    </changeSet>
+</databaseChangeLog>
