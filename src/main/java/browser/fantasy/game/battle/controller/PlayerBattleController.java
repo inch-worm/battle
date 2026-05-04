@@ -1,7 +1,5 @@
 package browser.fantasy.game.battle.controller;
 
-import browser.fantasy.game.battle.Edge;
-import browser.fantasy.game.battle.Node;
 import browser.fantasy.game.battle.PlayerBattlePathInfoDto;
 import browser.fantasy.game.battle.service.PlayerBattleService;
 import java.util.List;
@@ -19,7 +17,8 @@ public class PlayerBattleController {
   }
 
   @GetMapping("/playerBattlePathInfoDtos/{playerId}")
-  public List<PlayerBattlePathInfoDto> getCurrentPlayerBattlePathInfoDtos(@PathVariable String playerId) {
+  public List<PlayerBattlePathInfoDto> getCurrentPlayerBattlePathInfoDtos(
+      @PathVariable String playerId) {
     return playerBattleService.getPlayerBattlePathInfoDtos(playerId);
   }
 }
