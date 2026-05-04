@@ -62,6 +62,7 @@ As a player, I want combat to resolve automatically based on stats.
 Acceptance Criteria:
 Combat resolves once per turn.
 Damage is applied simultaneously to both sides.
+Damage is dealt as a total of the damage that the other side has on a conflicted node (sum of damage of all units).
 Health persists between turns.
 If both sides survive, combat continues next turn.
 If one side dies, its node becomes empty and the other remains on its node.

@@ -14,6 +14,28 @@
           },
           "yCoordinate": {
             "type": "integer"
+          },
+          "unitsInfo": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "unitType": {
+                  "type": "string"
+                },
+                "count": {
+                  "type": "integer"
+                },
+                "owner": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "unitType",
+                "count",
+                "owner"
+              ]
+            }
           }
         },
         "required": [
