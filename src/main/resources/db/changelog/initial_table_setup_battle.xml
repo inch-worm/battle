@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+		http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+		http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+    <changeSet id="initial_table_setup_battle" author="inchworm">
+        <createTable tableName="player_battle_path_info">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+
+            <column name="player_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint
+                baseTableName="player_battle_path_info"
+                baseColumnNames="player_id"
+                referencedTableName="player"
+                referencedColumnNames="id"
+                constraintName="fk_path_player"/>
+
+        <createTable tableName="node">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+
+            <column name="path_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="x_coordinate" type="int"/>
+            <column name="y_coordinate" type="int"/>
+        </createTable>
+        <addForeignKeyConstraint
+                baseTableName="node"
+                baseColumnNames="path_id"
+                referencedTableName="player_battle_path_info"
+                referencedColumnNames="id"
+                constraintName="fk_node_path"/>
+
+        <createTable tableName="edge">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+
+            <column name="path_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="from_node_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="to_node_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="edge"
+                baseColumnNames="path_id"
+                referencedTableName="player_battle_path_info"
+                referencedColumnNames="id"
+                constraintName="fk_edge_path"/>
+
+        <addForeignKeyConstraint
+                baseTableName="edge"
+                baseColumnNames="from_node_id"
+                referencedTableName="node"
+                referencedColumnNames="id"
+                constraintName="fk_edge_from_node"/>
+
+        <addForeignKeyConstraint
+                baseTableName="edge"
+                baseColumnNames="to_node_id"
+                referencedTableName="node"
+                referencedColumnNames="id"
+                constraintName="fk_edge_to_node"/>
+
+        <createTable tableName="unit_info">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+
+            <column name="node_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="unit_type" type="varchar(50)"/>
+            <column name="count" type="int"/>
+            <column name="owner" type="varchar(50)"/>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="unit_info"
+                baseColumnNames="node_id"
+                referencedTableName="node"
+                referencedColumnNames="id"
+                constraintName="fk_unit_node"/>
+    </changeSet>
+</databaseChangeLog>

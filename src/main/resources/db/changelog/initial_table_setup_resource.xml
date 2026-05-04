@@ -8,7 +8,7 @@
 		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
 		http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
 		http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
-    <changeSet id="initial_table_setup" author="adao">
+    <changeSet id="initial_table_setup_resource" author="adao">
         <createTable tableName="resource">
             <column name="id" type="uuid">
                 <constraints primaryKey="true"/>
@@ -48,20 +48,12 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <addForeignKeyConstraint baseColumnNames="resource_id" baseTableName="source_of_resource_cost" constraintName="FK_SOURCE_OF_RESOURCE_COST_ON_RESOURCE" referencedColumnNames="id" referencedTableName="resource"/>
-        <addForeignKeyConstraint baseColumnNames="source_of_resource_id" baseTableName="source_of_resource_cost" constraintName="FK_SOURCE_OF_RESOURCE_COST_ON_SOURCE_OF_RESOURCE" referencedColumnNames="id" referencedTableName="source_of_resource"/>
-        <createTable tableName="player">
-            <column name="id" type="UUID">
-                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_player"/>
-            </column>
-            <column name="name" type="VARCHAR(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="password" type="VARCHAR(255)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-        <addUniqueConstraint columnNames="name" constraintName="uc_player_name" tableName="player"/>
+        <addForeignKeyConstraint baseColumnNames="resource_id" baseTableName="source_of_resource_cost"
+                                 constraintName="FK_SOURCE_OF_RESOURCE_COST_ON_RESOURCE" referencedColumnNames="id"
+                                 referencedTableName="resource"/>
+        <addForeignKeyConstraint baseColumnNames="source_of_resource_id" baseTableName="source_of_resource_cost"
+                                 constraintName="FK_SOURCE_OF_RESOURCE_COST_ON_SOURCE_OF_RESOURCE"
+                                 referencedColumnNames="id" referencedTableName="source_of_resource"/>
         <createTable tableName="player_resource">
             <column name="id" type="UUID">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_player_resource"/>
@@ -76,8 +68,12 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <addForeignKeyConstraint baseColumnNames="player_id" baseTableName="player_resource" constraintName="FK_PLAYER_RESOURCE_ON_PLAYER" referencedColumnNames="id" referencedTableName="player"/>
-        <addForeignKeyConstraint baseColumnNames="resource_id" baseTableName="player_resource" constraintName="FK_PLAYER_RESOURCE_ON_RESOURCE" referencedColumnNames="id" referencedTableName="resource"/>
+        <addForeignKeyConstraint baseColumnNames="player_id" baseTableName="player_resource"
+                                 constraintName="FK_PLAYER_RESOURCE_ON_PLAYER" referencedColumnNames="id"
+                                 referencedTableName="player"/>
+        <addForeignKeyConstraint baseColumnNames="resource_id" baseTableName="player_resource"
+                                 constraintName="FK_PLAYER_RESOURCE_ON_RESOURCE" referencedColumnNames="id"
+                                 referencedTableName="resource"/>
         <createTable tableName="player_source_of_resource">
             <column name="id" type="UUID">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_player_source_of_resource"/>
@@ -92,7 +88,11 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <addForeignKeyConstraint baseColumnNames="player_id" baseTableName="player_source_of_resource" constraintName="FK_PLAYER_SOURCE_OF_RESOURCE_ON_PLAYER" referencedColumnNames="id" referencedTableName="player"/>
-        <addForeignKeyConstraint baseColumnNames="source_of_resource_id" baseTableName="player_source_of_resource" constraintName="FK_PLAYER_SOURCE_OF_RESOURCE_ON_SOURCE_OF_RESOURCE" referencedColumnNames="id" referencedTableName="source_of_resource"/>
+        <addForeignKeyConstraint baseColumnNames="player_id" baseTableName="player_source_of_resource"
+                                 constraintName="FK_PLAYER_SOURCE_OF_RESOURCE_ON_PLAYER" referencedColumnNames="id"
+                                 referencedTableName="player"/>
+        <addForeignKeyConstraint baseColumnNames="source_of_resource_id" baseTableName="player_source_of_resource"
+                                 constraintName="FK_PLAYER_SOURCE_OF_RESOURCE_ON_SOURCE_OF_RESOURCE"
+                                 referencedColumnNames="id" referencedTableName="source_of_resource"/>
     </changeSet>
 </databaseChangeLog>
