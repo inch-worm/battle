@@ -47,28 +47,28 @@
     </changeSet>
 
     <changeSet id="103-units-a" author="inchworm">
-        <insert tableName="unit_info">
+        <insert tableName="group_info">
             <column name="id" value="aaaaaaaa-aaaa-aaaa-aaaa-000000000101"/>
             <column name="node_id" value="aaaaaaaa-0000-0000-0000-000000000001"/>
-            <column name="unit_type" value="infantry"/>
+            <column name="unit_type" value="INFANTRY"/>
             <column name="count" valueNumeric="10"/>
-            <column name="owner" value="player"/>
+            <column name="owner" value="PLAYER"/>
         </insert>
 
-        <insert tableName="unit_info">
+        <insert tableName="group_info">
             <column name="id" value="aaaaaaaa-aaaa-aaaa-aaaa-000000000102"/>
             <column name="node_id" value="aaaaaaaa-0000-0000-0000-000000000002"/>
-            <column name="unit_type" value="archer"/>
+            <column name="unit_type" value="ARCHER"/>
             <column name="count" valueNumeric="5"/>
-            <column name="owner" value="enemy"/>
+            <column name="owner" value="ENEMY"/>
         </insert>
 
-        <insert tableName="unit_info">
+        <insert tableName="group_info">
             <column name="id" value="aaaaaaaa-aaaa-aaaa-aaaa-000000000103"/>
             <column name="node_id" value="aaaaaaaa-0000-0000-0000-000000000002"/>
-            <column name="unit_type" value="infantry"/>
+            <column name="unit_type" value="INFANTRY"/>
             <column name="count" valueNumeric="3"/>
-            <column name="owner" value="enemy"/>
+            <column name="owner" value="ENEMY"/>
         </insert>
     </changeSet>
 
@@ -128,20 +128,20 @@
     </changeSet>
 
     <changeSet id="107-units-b" author="inchworm">
-        <insert tableName="unit_info">
+        <insert tableName="group_info">
             <column name="id" value="bbbbbbbb-bbbb-bbbb-bbbb-000000000101"/>
             <column name="node_id" value="bbbbbbbb-0000-0000-0000-000000000001"/>
-            <column name="unit_type" value="cavalry"/>
+            <column name="unit_type" value="CAVALRY"/>
             <column name="count" valueNumeric="7"/>
-            <column name="owner" value="player"/>
+            <column name="owner" value="PLAYER"/>
         </insert>
 
-        <insert tableName="unit_info">
+        <insert tableName="group_info">
             <column name="id" value="bbbbbbbb-bbbb-bbbb-bbbb-000000000102"/>
             <column name="node_id" value="bbbbbbbb-0000-0000-0000-000000000003"/>
-            <column name="unit_type" value="archer"/>
+            <column name="unit_type" value="ARCHER"/>
             <column name="count" valueNumeric="12"/>
-            <column name="owner" value="enemy"/>
+            <column name="owner" value="ENEMY"/>
         </insert>
     </changeSet>
 
@@ -215,28 +215,28 @@
     </changeSet>
 
     <changeSet id="111-units-c" author="inchworm">
-        <insert tableName="unit_info">
+        <insert tableName="group_info">
             <column name="id" value="cccccccc-cccc-cccc-cccc-000000000101"/>
             <column name="node_id" value="cccccccc-0000-0000-0000-000000000002"/>
-            <column name="unit_type" value="infantry"/>
+            <column name="unit_type" value="INFANTRY"/>
             <column name="count" valueNumeric="20"/>
-            <column name="owner" value="enemy"/>
+            <column name="owner" value="ENEMY"/>
         </insert>
 
-        <insert tableName="unit_info">
+        <insert tableName="group_info">
             <column name="id" value="cccccccc-cccc-cccc-cccc-000000000102"/>
             <column name="node_id" value="cccccccc-0000-0000-0000-000000000004"/>
-            <column name="unit_type" value="cavalry"/>
+            <column name="unit_type" value="CAVALRY"/>
             <column name="count" valueNumeric="4"/>
-            <column name="owner" value="player"/>
+            <column name="owner" value="PLAYER"/>
         </insert>
 
-        <insert tableName="unit_info">
+        <insert tableName="group_info">
             <column name="id" value="cccccccc-cccc-cccc-cccc-000000000103"/>
             <column name="node_id" value="cccccccc-0000-0000-0000-000000000004"/>
-            <column name="unit_type" value="archer"/>
+            <column name="unit_type" value="ARCHER"/>
             <column name="count" valueNumeric="6"/>
-            <column name="owner" value="player"/>
+            <column name="owner" value="PLAYER"/>
         </insert>
     </changeSet>
 
