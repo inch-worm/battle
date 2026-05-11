@@ -31,7 +31,7 @@ public class Node {
   @Column(name = "y_coordinate")
   private Integer yCoordinate;
 
-  @OneToMany(mappedBy = "node", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "node", cascade = CascadeType.ALL)
   private List<GroupInfo> groupInfos = new ArrayList<>();
 
   public UUID getId() {

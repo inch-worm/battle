@@ -5,6 +5,7 @@ import browser.fantasy.game.battle.service.PlayerBattleService;
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -20,5 +21,10 @@ public class PlayerBattleController {
   public List<PlayerBattlePathInfoDto> getCurrentPlayerBattlePathInfoDtos(
       @PathVariable String playerId) {
     return playerBattleService.getPlayerBattlePathInfoDtos(playerId);
+  }
+
+  @PostMapping("/playerBattlePathNextTurn/{playerId}")
+  public List<PlayerBattlePathInfoDto> playerBattlePathNextTurn(@PathVariable String playerId) {
+    return playerBattleService.playerBattlePathNextTurn(playerId);
   }
 }
