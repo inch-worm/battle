@@ -2,7 +2,6 @@ package browser.fantasy.game.battle.service;
 
 import browser.fantasy.game.battle.PlayerBattlePathInfoDto;
 import browser.fantasy.game.battle.mapper.PlayerBattlePathInfoMapper;
-import browser.fantasy.game.battle.model.jpa.Edge;
 import browser.fantasy.game.battle.model.jpa.GroupInfo;
 import browser.fantasy.game.battle.model.jpa.Node;
 import browser.fantasy.game.battle.model.jpa.PlayerBattlePathInfo;
@@ -10,7 +9,6 @@ import browser.fantasy.game.battle.model.jpa.UnitOwner;
 import browser.fantasy.game.battle.model.repository.PlayerBattlePathInfoRepository;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -55,20 +53,14 @@ public class PlayerBattleService {
         pathInfo.getNodes().stream().collect(Collectors.toMap(Node::getId, Function.identity()));
     Map<UUID, UUID> nextNodeIdsByNodeId =
         pathInfo.getEdges().stream()
-            .sorted(Comparator.comparing(Edge::getId))
             .collect(
                 Collectors.toMap(
-                    edge -> edge.getFromNode().getId(),
-                    edge -> edge.getToNode().getId(),
-                    (first, ignored) -> first));
+                    edge -> edge.getFromNode().getId(), edge -> edge.getToNode().getId()));
     Map<UUID, UUID> previousNodeIdsByNodeId =
         pathInfo.getEdges().stream()
-            .sorted(Comparator.comparing(Edge::getId))
             .collect(
                 Collectors.toMap(
-                    edge -> edge.getToNode().getId(),
-                    edge -> edge.getFromNode().getId(),
-                    (first, ignored) -> first));
+                    edge -> edge.getToNode().getId(), edge -> edge.getFromNode().getId()));
 
     List<GroupMove> groupMoves = new ArrayList<>();
     for (Node node : pathInfo.getNodes()) {
@@ -89,10 +81,10 @@ public class PlayerBattleService {
       Map<UUID, UUID> nextNodeIdsByNodeId,
       Map<UUID, UUID> previousNodeIdsByNodeId) {
     UUID currentNodeId = groupInfo.getNode().getId();
-    if (groupInfo.getOwner() == UnitOwner.PLAYER) {
+    if (groupInfo.getOwner() == UnitOwner.ENEMY) {
       return nextNodeIdsByNodeId.get(currentNodeId);
     }
-    if (groupInfo.getOwner() == UnitOwner.ENEMY) {
+    if (groupInfo.getOwner() == UnitOwner.PLAYER) {
       return previousNodeIdsByNodeId.get(currentNodeId);
     }
     return null;
