@@ -51,55 +51,79 @@ public class PlayerBattleService {
   private void moveUnitsForNextTurn(PlayerBattlePathInfo pathInfo) {
     Map<UUID, Node> nodesById =
         pathInfo.getNodes().stream().collect(Collectors.toMap(Node::getId, Function.identity()));
-    Map<UUID, UUID> nextNodeIdsByNodeId =
+    Map<UUID, UUID> previousNodeIdsByNodeId =
         pathInfo.getEdges().stream()
             .collect(
                 Collectors.toMap(
                     edge -> edge.getFromNode().getId(), edge -> edge.getToNode().getId()));
-    Map<UUID, UUID> previousNodeIdsByNodeId =
+    Map<UUID, UUID> nextNodeIdsByNodeId =
         pathInfo.getEdges().stream()
             .collect(
                 Collectors.toMap(
                     edge -> edge.getToNode().getId(), edge -> edge.getFromNode().getId()));
 
-    List<GroupMove> groupMoves = new ArrayList<>();
-    for (Node node : pathInfo.getNodes()) {
-      for (GroupInfo groupInfo : node.getGroupInfos()) {
-        UUID destinationNodeId =
-            getDestinationNodeId(groupInfo, nextNodeIdsByNodeId, previousNodeIdsByNodeId);
-        if (destinationNodeId != null) {
-          groupMoves.add(new GroupMove(groupInfo, node, nodesById.get(destinationNodeId)));
-        }
-      }
-    }
-
-    groupMoves.forEach(this::moveGroup);
+    moveEnemyGroups(pathInfo, previousNodeIdsByNodeId, nodesById);
+    movePlayerGroups(pathInfo, nextNodeIdsByNodeId, nodesById);
   }
 
-  private UUID getDestinationNodeId(
-      GroupInfo groupInfo,
+  private void moveEnemyGroups(
+      PlayerBattlePathInfo pathInfo,
+      Map<UUID, UUID> previousNodeIdsByNodeId,
+      Map<UUID, Node> nodesById) {
+    List<GroupMove> groupMovesEnemy = new ArrayList<>();
+    pathInfo
+        .getNodes()
+        .forEach(
+            node ->
+                node.getGroupInfos().stream()
+                    .filter(groupInfo -> UnitOwner.ENEMY.equals(groupInfo.getOwner()))
+                    .forEach(
+                        groupInfo -> {
+                          UUID destinationNodeId =
+                              previousNodeIdsByNodeId.get(groupInfo.getNode().getId());
+                          if (destinationNodeId != null) {
+                            Node destinationNode = nodesById.get(destinationNodeId);
+                            if (destinationNode.getGroupInfos().stream()
+                                .noneMatch(gi -> UnitOwner.PLAYER.equals(gi.getOwner()))) {
+                              groupMovesEnemy.add(new GroupMove(groupInfo, node, destinationNode));
+                            }
+                          }
+                        }));
+
+    groupMovesEnemy.forEach(this::moveGroup);
+  }
+
+  private void movePlayerGroups(
+      PlayerBattlePathInfo pathInfo,
       Map<UUID, UUID> nextNodeIdsByNodeId,
-      Map<UUID, UUID> previousNodeIdsByNodeId) {
-    UUID currentNodeId = groupInfo.getNode().getId();
-    if (groupInfo.getOwner() == UnitOwner.ENEMY) {
-      return nextNodeIdsByNodeId.get(currentNodeId);
-    }
-    if (groupInfo.getOwner() == UnitOwner.PLAYER) {
-      return previousNodeIdsByNodeId.get(currentNodeId);
-    }
-    return null;
+      Map<UUID, Node> nodesById) {
+    List<GroupMove> groupMovesPlayer = new ArrayList<>();
+    pathInfo
+        .getNodes()
+        .forEach(
+            node ->
+                node.getGroupInfos().stream()
+                    .filter(groupInfo -> UnitOwner.PLAYER.equals(groupInfo.getOwner()))
+                    .forEach(
+                        groupInfo -> {
+                          UUID destinationNodeId =
+                              nextNodeIdsByNodeId.get(groupInfo.getNode().getId());
+                          if (destinationNodeId != null) {
+                            Node destinationNode = nodesById.get(destinationNodeId);
+                            if (destinationNode.getGroupInfos().stream()
+                                .noneMatch(gi -> UnitOwner.ENEMY.equals(gi.getOwner()))) {
+                              groupMovesPlayer.add(new GroupMove(groupInfo, node, destinationNode));
+                            }
+                          }
+                        }));
+
+    groupMovesPlayer.forEach(this::moveGroup);
   }
 
   private void moveGroup(GroupMove groupMove) {
-    if (groupMove.toNode() == null || groupMove.fromNode().equals(groupMove.toNode())) {
-      return;
-    }
-
     groupMove.fromNode().getGroupInfos().remove(groupMove.groupInfo());
     groupMove.groupInfo().setNode(groupMove.toNode());
-    if (!groupMove.toNode().getGroupInfos().contains(groupMove.groupInfo())) {
-      groupMove.toNode().getGroupInfos().add(groupMove.groupInfo());
-    }
+    groupMove.toNode().getGroupInfos().add(groupMove.groupInfo());
   }
 
   private record GroupMove(GroupInfo groupInfo, Node fromNode, Node toNode) {}
