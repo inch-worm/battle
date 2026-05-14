@@ -11,5 +11,6 @@
     <include file="initial_table_setup_player.xml" relativeToChangelogFile="true"/>
     <include file="initial_table_setup_battle.xml" relativeToChangelogFile="true"/>
     <include file="initial_table_setup_resource.xml" relativeToChangelogFile="true"/>
-    <include file="V2026_05_04_20_39_00_initial_test_battle_data.xml" relativeToChangelogFile="true" context="test,local"/>
+    <include file="initial_data_unit_types.xml" relativeToChangelogFile="true"/>
+    <include file="V2026_05_04_20_39_00_initial_test_battle_data.xml" relativeToChangelogFile="true" context="local,test"/>
 </databaseChangeLog>

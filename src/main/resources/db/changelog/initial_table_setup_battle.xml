@@ -87,6 +87,20 @@
                 referencedColumnNames="id"
                 constraintName="fk_edge_to_node"/>
 
+        <createTable tableName="unit_type">
+            <column name="name" type="varchar(50)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="hp" type="int">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="attack" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
         <createTable tableName="group_info">
             <column name="id" type="uuid">
                 <constraints primaryKey="true"/>
@@ -96,7 +110,10 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="unit_type" type="varchar(50)"/>
+            <column name="unit_type" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+
             <column name="count" type="int"/>
             <column name="owner" type="varchar(50)"/>
         </createTable>
@@ -107,5 +124,12 @@
                 referencedTableName="node"
                 referencedColumnNames="id"
                 constraintName="fk_group_node"/>
+
+        <addForeignKeyConstraint
+                baseTableName="group_info"
+                baseColumnNames="unit_type"
+                referencedTableName="unit_type"
+                referencedColumnNames="name"
+                constraintName="fk_group_unit_type"/>
     </changeSet>
 </databaseChangeLog>

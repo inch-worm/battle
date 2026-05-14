@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="initial-data-unit-types" author="inchworm">
+        <insert tableName="unit_type">
+            <column name="name" value="INFANTRY"/>
+            <column name="hp" valueNumeric="10"/>
+            <column name="attack" valueNumeric="4"/>
+        </insert>
+
+        <insert tableName="unit_type">
+            <column name="name" value="ARCHER"/>
+            <column name="hp" valueNumeric="6"/>
+            <column name="attack" valueNumeric="7"/>
+        </insert>
+
+        <insert tableName="unit_type">
+            <column name="name" value="CAVALRY"/>
+            <column name="hp" valueNumeric="14"/>
+            <column name="attack" valueNumeric="6"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

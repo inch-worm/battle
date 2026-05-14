@@ -32,7 +32,7 @@ public class PlayerBattlePathInfoMapper {
                                                 .withUnitType(
                                                     groupInfo.getUnitType() == null
                                                         ? null
-                                                        : groupInfo.getUnitType().name())
+                                                        : groupInfo.getUnitType().getName())
                                                 .withCount(toLong(groupInfo.getCount()))
                                                 .withOwner(
                                                     groupInfo.getOwner() == null

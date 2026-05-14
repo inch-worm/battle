@@ -23,8 +23,8 @@ public class GroupInfo {
   @JoinColumn(name = "node_id", nullable = false)
   private Node node;
 
-  @Enumerated(EnumType.STRING)
-  @Column(name = "unit_type", length = 50)
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "unit_type", nullable = false)
   private UnitType unitType;
 
   @Column(name = "count")
