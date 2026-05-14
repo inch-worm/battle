@@ -12,15 +12,11 @@ import browser.fantasy.game.battle.PlayerBattlePathInfoDto;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClient;
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class PlayerBattleControllerIntegrationTest extends AbstractIntegrationTest {
 
   private static final String EXISTING_PLAYER_ID = "11111111-1111-1111-1111-111111111111";
@@ -35,8 +31,9 @@ class PlayerBattleControllerIntegrationTest extends AbstractIntegrationTest {
   }
 
   @Test
-  @Order(1)
   void shouldReturnPlayerBattlePathInfoDtosForExistingPlayer() {
+    seedExistingPlayerBattlePaths();
+
     ResponseEntity<PlayerBattlePathInfoDto[]> response =
         restClient
             .get()
@@ -47,7 +44,7 @@ class PlayerBattleControllerIntegrationTest extends AbstractIntegrationTest {
     assertThat(response.getStatusCode()).isEqualTo(OK);
 
     List<PlayerBattlePathInfoDto> pathInfos = Arrays.asList(response.getBody());
-    assertThat(pathInfos).hasSize(3);
+    assertThat(pathInfos).hasSize(2);
 
     PlayerBattlePathInfoDto pathA =
         pathInfos.stream()
@@ -78,7 +75,6 @@ class PlayerBattleControllerIntegrationTest extends AbstractIntegrationTest {
   }
 
   @Test
-  @Order(2)
   void shouldReturnEmptyListWhenPlayerHasNoBattlePathInfoDtos() {
     ResponseEntity<PlayerBattlePathInfoDto[]> response =
         restClient
@@ -92,8 +88,9 @@ class PlayerBattleControllerIntegrationTest extends AbstractIntegrationTest {
   }
 
   @Test
-  @Order(3)
-  void shouldMoveAllUnitsOneNodeAndPersistTurnResult() {
+  void shouldMoveUnblockedUnitsOneNodeAndPersistTurnResult() {
+    seedExistingPlayerBattlePaths();
+
     ResponseEntity<PlayerBattlePathInfoDto[]> nextTurnResponse =
         restClient
             .post()
@@ -111,11 +108,13 @@ class PlayerBattleControllerIntegrationTest extends AbstractIntegrationTest {
             .toEntity(PlayerBattlePathInfoDto[].class);
 
     assertThat(currentStateResponse.getStatusCode()).isEqualTo(OK);
-    assertPathAUnitsWereMoved(Arrays.asList(nextTurnResponse.getBody()));
-    assertPathAUnitsWereMoved(Arrays.asList(currentStateResponse.getBody()));
+    assertPathAUnitsWereMovedAccordingToProductionRules(Arrays.asList(nextTurnResponse.getBody()));
+    assertPathAUnitsWereMovedAccordingToProductionRules(
+        Arrays.asList(currentStateResponse.getBody()));
   }
 
-  private void assertPathAUnitsWereMoved(List<PlayerBattlePathInfoDto> pathInfos) {
+  private void assertPathAUnitsWereMovedAccordingToProductionRules(
+      List<PlayerBattlePathInfoDto> pathInfos) {
     PlayerBattlePathInfoDto pathA =
         pathInfos.stream()
             .filter(pathInfo -> pathInfo.getNodeDtos().size() == 3)
@@ -124,12 +123,72 @@ class PlayerBattleControllerIntegrationTest extends AbstractIntegrationTest {
 
     assertThat(nodeById(pathA, "aaaaaaaa-0000-0000-0000-000000000001").getGroupInfoDtos())
         .extracting(GroupInfoDto::getUnitType, GroupInfoDto::getCount, GroupInfoDto::getOwner)
-        .containsExactly(tuple("ARCHER", 5L, "ENEMY"), tuple("INFANTRY", 3L, "ENEMY"));
-    assertThat(nodeById(pathA, "aaaaaaaa-0000-0000-0000-000000000002").getGroupInfoDtos())
-        .extracting(GroupInfoDto::getUnitType, GroupInfoDto::getCount, GroupInfoDto::getOwner)
         .containsExactly(tuple("INFANTRY", 10L, "PLAYER"));
-    assertThat(nodeById(pathA, "aaaaaaaa-0000-0000-0000-000000000003").getGroupInfoDtos())
+    assertThat(nodeById(pathA, "aaaaaaaa-0000-0000-0000-000000000002").getGroupInfoDtos())
         .isEmpty();
+    assertThat(nodeById(pathA, "aaaaaaaa-0000-0000-0000-000000000003").getGroupInfoDtos())
+        .extracting(GroupInfoDto::getUnitType, GroupInfoDto::getCount, GroupInfoDto::getOwner)
+        .containsExactly(tuple("ARCHER", 5L, "ENEMY"), tuple("INFANTRY", 3L, "ENEMY"));
+  }
+
+  private void seedExistingPlayerBattlePaths() {
+    testDataHelper.insertPlayer(
+        "11111111-1111-1111-1111-111111111111", "Test Player", "test password");
+
+    testDataHelper.insertPath(
+        "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", "11111111-1111-1111-1111-111111111111", "Path A");
+    testDataHelper.insertNode(
+        "aaaaaaaa-0000-0000-0000-000000000001", "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", 1, 2);
+    testDataHelper.insertNode(
+        "aaaaaaaa-0000-0000-0000-000000000002", "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", 2, 3);
+    testDataHelper.insertNode(
+        "aaaaaaaa-0000-0000-0000-000000000003", "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", 1, 4);
+    testDataHelper.insertGroupInfo(
+        "aaaaaaaa-aaaa-aaaa-aaaa-000000000101",
+        "aaaaaaaa-0000-0000-0000-000000000001",
+        "INFANTRY",
+        10,
+        "PLAYER");
+    testDataHelper.insertGroupInfo(
+        "aaaaaaaa-aaaa-aaaa-aaaa-000000000102",
+        "aaaaaaaa-0000-0000-0000-000000000002",
+        "ARCHER",
+        5,
+        "ENEMY");
+    testDataHelper.insertGroupInfo(
+        "aaaaaaaa-aaaa-aaaa-aaaa-000000000103",
+        "aaaaaaaa-0000-0000-0000-000000000002",
+        "INFANTRY",
+        3,
+        "ENEMY");
+    testDataHelper.insertEdge(
+        "aaaaaaaa-aaaa-aaaa-aaaa-000000000201",
+        "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+        "aaaaaaaa-0000-0000-0000-000000000001",
+        "aaaaaaaa-0000-0000-0000-000000000002");
+    testDataHelper.insertEdge(
+        "aaaaaaaa-aaaa-aaaa-aaaa-000000000202",
+        "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+        "aaaaaaaa-0000-0000-0000-000000000002",
+        "aaaaaaaa-0000-0000-0000-000000000003");
+
+    testDataHelper.insertPath(
+        "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb", "11111111-1111-1111-1111-111111111111", "Path B");
+    testDataHelper.insertNode(
+        "bbbbbbbb-0000-0000-0000-000000000001", "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb", 5, 1);
+    testDataHelper.insertNode(
+        "bbbbbbbb-0000-0000-0000-000000000002", "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb", 4, 2);
+    testDataHelper.insertGroupInfo(
+        "bbbbbbbb-bbbb-bbbb-bbbb-000000000101",
+        "bbbbbbbb-0000-0000-0000-000000000001",
+        "CAVALRY",
+        7,
+        "PLAYER");
+    testDataHelper.insertEdge(
+        "bbbbbbbb-bbbb-bbbb-bbbb-000000000201",
+        "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+        "bbbbbbbb-0000-0000-0000-000000000001",
+        "bbbbbbbb-0000-0000-0000-000000000002");
   }
 
   private NodeDto nodeById(PlayerBattlePathInfoDto pathInfo, String nodeId) {
