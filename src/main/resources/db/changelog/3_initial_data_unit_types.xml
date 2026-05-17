@@ -10,18 +10,21 @@
             <column name="name" value="INFANTRY"/>
             <column name="hp" valueNumeric="10"/>
             <column name="attack" valueNumeric="4"/>
+            <column name="order_in_fight" valueNumeric="0"/>
         </insert>
 
         <insert tableName="unit_type">
             <column name="name" value="ARCHER"/>
             <column name="hp" valueNumeric="6"/>
             <column name="attack" valueNumeric="7"/>
+            <column name="order_in_fight" valueNumeric="6"/>
         </insert>
 
         <insert tableName="unit_type">
             <column name="name" value="CAVALRY"/>
             <column name="hp" valueNumeric="14"/>
             <column name="attack" valueNumeric="6"/>
+            <column name="order_in_fight" valueNumeric="1"/>
         </insert>
     </changeSet>
 </databaseChangeLog>

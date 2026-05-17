@@ -8,9 +8,9 @@
 		http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
 		http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
 		http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
-    <include file="initial_table_setup_player.xml" relativeToChangelogFile="true"/>
-    <include file="initial_table_setup_battle.xml" relativeToChangelogFile="true"/>
-    <include file="initial_table_setup_resource.xml" relativeToChangelogFile="true"/>
-    <include file="initial_data_unit_types.xml" relativeToChangelogFile="true"/>
-    <include file="V2026_05_04_20_39_00_initial_test_battle_data.xml" relativeToChangelogFile="true" context="local,test"/>
+    <include file="0_initial_table_setup_player.xml" relativeToChangelogFile="true"/>
+    <include file="1_initial_table_setup_battle.xml" relativeToChangelogFile="true"/>
+    <include file="2_initial_table_setup_resource.xml" relativeToChangelogFile="true"/>
+    <include file="3_initial_data_unit_types.xml" relativeToChangelogFile="true"/>
+    <include file="4_initial_test_battle_data.xml" relativeToChangelogFile="true" context="local,test"/>
 </databaseChangeLog>

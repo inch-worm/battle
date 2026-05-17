@@ -10,9 +10,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.util.UUID;
+import lombok.Data;
 
 @Entity
 @Table(name = "group_info")
+@Data
 public class GroupInfo {
 
   @Id
@@ -34,43 +36,6 @@ public class GroupInfo {
   @Column(name = "owner", length = 50)
   private UnitOwner owner;
 
-  public UUID getId() {
-    return id;
-  }
-
-  public void setId(UUID id) {
-    this.id = id;
-  }
-
-  public Node getNode() {
-    return node;
-  }
-
-  public void setNode(Node node) {
-    this.node = node;
-  }
-
-  public UnitType getUnitType() {
-    return unitType;
-  }
-
-  public void setUnitType(UnitType unitType) {
-    this.unitType = unitType;
-  }
-
-  public Integer getCount() {
-    return count;
-  }
-
-  public void setCount(Integer count) {
-    this.count = count;
-  }
-
-  public UnitOwner getOwner() {
-    return owner;
-  }
-
-  public void setOwner(UnitOwner owner) {
-    this.owner = owner;
-  }
+  @Column(name = "remaining_hp")
+  private Integer remainingHp;
 }

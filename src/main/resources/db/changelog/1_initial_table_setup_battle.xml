@@ -99,23 +99,27 @@
             <column name="attack" type="int">
                 <constraints nullable="false"/>
             </column>
+
+            <column name="order_in_fight" type="int">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
 
         <createTable tableName="group_info">
             <column name="id" type="uuid">
                 <constraints primaryKey="true"/>
             </column>
-
             <column name="node_id" type="uuid">
                 <constraints nullable="false"/>
             </column>
-
             <column name="unit_type" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
-
             <column name="count" type="int"/>
             <column name="owner" type="varchar(50)"/>
+            <column name="remaining_hp" type="int">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
 
         <addForeignKeyConstraint

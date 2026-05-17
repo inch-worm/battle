@@ -4,9 +4,11 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Data;
 
 @Entity
 @Table(name = "unit_type")
+@Data
 public class UnitType {
 
   @Id
@@ -19,27 +21,6 @@ public class UnitType {
   @Column(name = "attack", nullable = false)
   private Integer attack;
 
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public Integer getHp() {
-    return hp;
-  }
-
-  public void setHp(Integer hp) {
-    this.hp = hp;
-  }
-
-  public Integer getAttack() {
-    return attack;
-  }
-
-  public void setAttack(Integer attack) {
-    this.attack = attack;
-  }
+  @Column(name = "order_in_fight", nullable = false)
+  private Integer orderInFight;
 }
