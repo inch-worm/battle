@@ -117,9 +117,6 @@
             </column>
             <column name="count" type="int"/>
             <column name="owner" type="varchar(50)"/>
-            <column name="remaining_hp" type="int">
-                <constraints nullable="false"/>
-            </column>
         </createTable>
 
         <addForeignKeyConstraint

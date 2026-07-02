@@ -35,7 +35,4 @@ public class GroupInfo {
   @Enumerated(EnumType.STRING)
   @Column(name = "owner", length = 50)
   private UnitOwner owner;
-
-  @Column(name = "remaining_hp")
-  private Integer remainingHp;
 }

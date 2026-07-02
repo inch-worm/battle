@@ -53,9 +53,6 @@
             <column name="unit_type" value="INFANTRY"/>
             <column name="count" valueNumeric="10"/>
             <column name="owner" value="PLAYER"/>
-            <column
-                    name="remaining_hp"
-                    valueComputed="(SELECT hp FROM unit_type WHERE name = 'INFANTRY')"/>
         </insert>
 
         <insert tableName="group_info">
@@ -64,9 +61,6 @@
             <column name="unit_type" value="ARCHER"/>
             <column name="count" valueNumeric="5"/>
             <column name="owner" value="ENEMY"/>
-            <column
-                    name="remaining_hp"
-                    valueComputed="(SELECT hp FROM unit_type WHERE name = 'ARCHER')"/>
         </insert>
 
         <insert tableName="group_info">
@@ -75,9 +69,6 @@
             <column name="unit_type" value="INFANTRY"/>
             <column name="count" valueNumeric="3"/>
             <column name="owner" value="ENEMY"/>
-            <column
-                    name="remaining_hp"
-                    valueComputed="(SELECT hp FROM unit_type WHERE name = 'INFANTRY')"/>
         </insert>
     </changeSet>
 
@@ -143,9 +134,6 @@
             <column name="unit_type" value="CAVALRY"/>
             <column name="count" valueNumeric="7"/>
             <column name="owner" value="PLAYER"/>
-            <column
-                    name="remaining_hp"
-                    valueComputed="(SELECT hp FROM unit_type WHERE name = 'CAVALRY')"/>
         </insert>
 
         <insert tableName="group_info">
@@ -154,9 +142,6 @@
             <column name="unit_type" value="ARCHER"/>
             <column name="count" valueNumeric="12"/>
             <column name="owner" value="ENEMY"/>
-            <column
-                    name="remaining_hp"
-                    valueComputed="(SELECT hp FROM unit_type WHERE name = 'ARCHER')"/>
         </insert>
     </changeSet>
 
@@ -236,9 +221,6 @@
             <column name="unit_type" value="INFANTRY"/>
             <column name="count" valueNumeric="20"/>
             <column name="owner" value="ENEMY"/>
-            <column
-                    name="remaining_hp"
-                    valueComputed="(SELECT hp FROM unit_type WHERE name = 'INFANTRY')"/>
         </insert>
 
         <insert tableName="group_info">
@@ -247,9 +229,6 @@
             <column name="unit_type" value="CAVALRY"/>
             <column name="count" valueNumeric="4"/>
             <column name="owner" value="PLAYER"/>
-            <column
-                    name="remaining_hp"
-                    valueComputed="(SELECT hp FROM unit_type WHERE name = 'CAVALRY')"/>
         </insert>
 
         <insert tableName="group_info">
@@ -258,9 +237,6 @@
             <column name="unit_type" value="ARCHER"/>
             <column name="count" valueNumeric="6"/>
             <column name="owner" value="PLAYER"/>
-            <column
-                    name="remaining_hp"
-                    valueComputed="(SELECT hp FROM unit_type WHERE name = 'ARCHER')"/>
         </insert>
     </changeSet>
 
