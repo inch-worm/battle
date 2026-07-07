@@ -56,18 +56,25 @@ public class PlayerBattleCombatService {
   }
 
   private void resolveFightOutcome(GroupAttack groupAttack) {
-    int attackersAttack = groupAttack.attackers().stream().mapToInt(a -> a.getCount() * a.getUnitType().getAttack()).sum();
-    int defendersAttack = groupAttack.defenders().stream().mapToInt(d -> d.getCount() * d.getUnitType().getAttack()).sum();
+    int attackersAttack =
+        groupAttack.attackers().stream()
+            .mapToInt(a -> a.getCount() * a.getUnitType().getAttack())
+            .sum();
+    int defendersAttack =
+        groupAttack.defenders().stream()
+            .mapToInt(d -> d.getCount() * d.getUnitType().getAttack())
+            .sum();
 
     List<GroupInfo> defenderCasualties = new ArrayList<>();
-    for (GroupInfo d : groupAttack.defenders().stream()
+    for (GroupInfo d :
+        groupAttack.defenders().stream()
             .sorted(Comparator.comparing((d) -> d.getUnitType().getOrderInFight()))
             .toList()) {
       attackersAttack = attackersAttack - d.getCount() * d.getUnitType().getHp();
       if (attackersAttack >= 0) {
         defenderCasualties.add(d);
       } else {
-        d.setCount(-attackersAttack/d.getUnitType().getHp());
+        d.setCount(-attackersAttack / d.getUnitType().getHp());
         break;
       }
     }
@@ -81,7 +88,7 @@ public class PlayerBattleCombatService {
       if (defendersAttack >= 0) {
         attackersCasualties.add(a);
       } else {
-        a.setCount(-defendersAttack/a.getUnitType().getHp());
+        a.setCount(-defendersAttack / a.getUnitType().getHp());
         break;
       }
     }

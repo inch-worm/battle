@@ -113,6 +113,31 @@ class PlayerBattleControllerIntegrationTest extends AbstractIntegrationTest {
         Arrays.asList(currentStateResponse.getBody()));
   }
 
+  @Test
+  void shouldResolveCombatBeforeMovingSurvivingEnemyUnitsAndPersistTurnResult() {
+    seedCombatPath();
+
+    ResponseEntity<PlayerBattlePathInfoDto[]> nextTurnResponse =
+        restClient
+            .post()
+            .uri("/playerBattlePathNextTurn/{playerId}", EXISTING_PLAYER_ID)
+            .retrieve()
+            .toEntity(PlayerBattlePathInfoDto[].class);
+
+    assertThat(nextTurnResponse.getStatusCode()).isEqualTo(OK);
+
+    ResponseEntity<PlayerBattlePathInfoDto[]> currentStateResponse =
+        restClient
+            .get()
+            .uri("/playerBattlePathInfoDtos/{playerId}", EXISTING_PLAYER_ID)
+            .retrieve()
+            .toEntity(PlayerBattlePathInfoDto[].class);
+
+    assertThat(currentStateResponse.getStatusCode()).isEqualTo(OK);
+    assertCombatPathWasResolvedAndMoved(Arrays.asList(nextTurnResponse.getBody()));
+    assertCombatPathWasResolvedAndMoved(Arrays.asList(currentStateResponse.getBody()));
+  }
+
   private void assertPathAUnitsWereMovedAccordingToProductionRules(
       List<PlayerBattlePathInfoDto> pathInfos) {
     PlayerBattlePathInfoDto pathA =
@@ -129,6 +154,20 @@ class PlayerBattleControllerIntegrationTest extends AbstractIntegrationTest {
     assertThat(nodeById(pathA, "aaaaaaaa-0000-0000-0000-000000000003").getGroupInfoDtos())
         .extracting(GroupInfoDto::getUnitType, GroupInfoDto::getCount, GroupInfoDto::getOwner)
         .containsExactly(tuple("ARCHER", 5L, "ENEMY"), tuple("INFANTRY", 3L, "ENEMY"));
+  }
+
+  private void assertCombatPathWasResolvedAndMoved(List<PlayerBattlePathInfoDto> pathInfos) {
+    PlayerBattlePathInfoDto combatPath =
+        pathInfos.stream()
+            .filter(pathInfo -> pathInfo.getNodeDtos().size() == 2)
+            .findFirst()
+            .orElseThrow();
+
+    assertThat(nodeById(combatPath, "cccccccc-0000-0000-0000-000000000001").getGroupInfoDtos())
+        .isEmpty();
+    assertThat(nodeById(combatPath, "cccccccc-0000-0000-0000-000000000002").getGroupInfoDtos())
+        .extracting(GroupInfoDto::getUnitType, GroupInfoDto::getCount, GroupInfoDto::getOwner)
+        .containsExactly(tuple("ARCHER", 3L, "ENEMY"));
   }
 
   private void seedExistingPlayerBattlePaths() {
@@ -189,6 +228,36 @@ class PlayerBattleControllerIntegrationTest extends AbstractIntegrationTest {
         "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
         "bbbbbbbb-0000-0000-0000-000000000001",
         "bbbbbbbb-0000-0000-0000-000000000002");
+  }
+
+  private void seedCombatPath() {
+    testDataHelper.insertPlayer(
+        "11111111-1111-1111-1111-111111111111", "Test Player", "test password");
+    testDataHelper.insertPath(
+        "cccccccc-cccc-cccc-cccc-cccccccccccc",
+        "11111111-1111-1111-1111-111111111111",
+        "Combat Path");
+    testDataHelper.insertNode(
+        "cccccccc-0000-0000-0000-000000000001", "cccccccc-cccc-cccc-cccc-cccccccccccc", 1, 1);
+    testDataHelper.insertNode(
+        "cccccccc-0000-0000-0000-000000000002", "cccccccc-cccc-cccc-cccc-cccccccccccc", 2, 1);
+    testDataHelper.insertGroupInfo(
+        "cccccccc-cccc-cccc-cccc-000000000101",
+        "cccccccc-0000-0000-0000-000000000001",
+        "ARCHER",
+        5,
+        "ENEMY");
+    testDataHelper.insertGroupInfo(
+        "cccccccc-cccc-cccc-cccc-000000000102",
+        "cccccccc-0000-0000-0000-000000000002",
+        "INFANTRY",
+        3,
+        "PLAYER");
+    testDataHelper.insertEdge(
+        "cccccccc-cccc-cccc-cccc-000000000201",
+        "cccccccc-cccc-cccc-cccc-cccccccccccc",
+        "cccccccc-0000-0000-0000-000000000001",
+        "cccccccc-0000-0000-0000-000000000002");
   }
 
   private NodeDto nodeById(PlayerBattlePathInfoDto pathInfo, String nodeId) {
