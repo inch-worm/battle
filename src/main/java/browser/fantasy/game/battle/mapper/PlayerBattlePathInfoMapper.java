@@ -5,6 +5,7 @@ import browser.fantasy.game.battle.model.jpa.Edge;
 import browser.fantasy.game.battle.model.jpa.GroupInfo;
 import browser.fantasy.game.battle.model.jpa.Node;
 import browser.fantasy.game.battle.model.jpa.PlayerBattlePathInfo;
+import browser.fantasy.game.battle.model.jpa.UnitType;
 import java.util.Comparator;
 import org.springframework.stereotype.Component;
 
@@ -29,10 +30,8 @@ public class PlayerBattlePathInfoMapper {
                                     .map(
                                         groupInfo ->
                                             new GroupInfoDto()
-                                                .withUnitType(
-                                                    groupInfo.getUnitType() == null
-                                                        ? null
-                                                        : groupInfo.getUnitType().getName())
+                                                .withUnitTypeDto(
+                                                    mapUnitType(groupInfo.getUnitType()))
                                                 .withCount(toLong(groupInfo.getCount()))
                                                 .withOwner(
                                                     groupInfo.getOwner() == null
@@ -49,6 +48,16 @@ public class PlayerBattlePathInfoMapper {
                             .withFromNodeId(edge.getFromNode().getId().toString())
                             .withToNodeId(edge.getToNode().getId().toString()))
                 .toList());
+  }
+
+  private UnitTypeDto mapUnitType(UnitType unitType) {
+    return unitType == null
+        ? null
+        : new UnitTypeDto()
+            .withName(unitType.getName())
+            .withHp(toLong(unitType.getHp()))
+            .withAttack(toLong(unitType.getAttack()))
+            .withOrderInFight(toLong(unitType.getOrderInFight()));
   }
 
   private Long toLong(Integer value) {

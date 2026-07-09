@@ -62,11 +62,24 @@ class PlayerBattleControllerIntegrationTest extends AbstractIntegrationTest {
         .extracting(NodeDto::getxCoordinate, NodeDto::getyCoordinate)
         .containsExactly(tuple(1L, 2L), tuple(2L, 3L), tuple(1L, 4L));
     assertThat(pathA.getNodeDtos().get(0).getGroupInfoDtos())
-        .extracting(GroupInfoDto::getUnitType, GroupInfoDto::getCount, GroupInfoDto::getOwner)
-        .containsExactly(tuple("INFANTRY", 10L, "PLAYER"));
+        .extracting(
+            groupInfoDto -> groupInfoDto.getUnitTypeDto().getName(),
+            groupInfoDto -> groupInfoDto.getUnitTypeDto().getHp(),
+            groupInfoDto -> groupInfoDto.getUnitTypeDto().getAttack(),
+            groupInfoDto -> groupInfoDto.getUnitTypeDto().getOrderInFight(),
+            GroupInfoDto::getCount,
+            GroupInfoDto::getOwner)
+        .containsExactly(tuple("INFANTRY", 10L, 4L, 0L, 10L, "PLAYER"));
     assertThat(pathA.getNodeDtos().get(1).getGroupInfoDtos())
-        .extracting(GroupInfoDto::getUnitType, GroupInfoDto::getCount, GroupInfoDto::getOwner)
-        .containsExactly(tuple("ARCHER", 5L, "ENEMY"), tuple("INFANTRY", 3L, "ENEMY"));
+        .extracting(
+            groupInfoDto -> groupInfoDto.getUnitTypeDto().getName(),
+            groupInfoDto -> groupInfoDto.getUnitTypeDto().getHp(),
+            groupInfoDto -> groupInfoDto.getUnitTypeDto().getAttack(),
+            groupInfoDto -> groupInfoDto.getUnitTypeDto().getOrderInFight(),
+            GroupInfoDto::getCount,
+            GroupInfoDto::getOwner)
+        .containsExactly(
+            tuple("ARCHER", 6L, 7L, 6L, 5L, "ENEMY"), tuple("INFANTRY", 10L, 4L, 0L, 3L, "ENEMY"));
     assertThat(pathA.getEdgeDtos())
         .extracting(EdgeDto::getFromNodeId, EdgeDto::getToNodeId)
         .containsExactly(
@@ -147,13 +160,26 @@ class PlayerBattleControllerIntegrationTest extends AbstractIntegrationTest {
             .orElseThrow();
 
     assertThat(nodeById(pathA, "aaaaaaaa-0000-0000-0000-000000000001").getGroupInfoDtos())
-        .extracting(GroupInfoDto::getUnitType, GroupInfoDto::getCount, GroupInfoDto::getOwner)
-        .containsExactly(tuple("INFANTRY", 10L, "PLAYER"));
+        .extracting(
+            groupInfoDto -> groupInfoDto.getUnitTypeDto().getName(),
+            groupInfoDto -> groupInfoDto.getUnitTypeDto().getHp(),
+            groupInfoDto -> groupInfoDto.getUnitTypeDto().getAttack(),
+            groupInfoDto -> groupInfoDto.getUnitTypeDto().getOrderInFight(),
+            GroupInfoDto::getCount,
+            GroupInfoDto::getOwner)
+        .containsExactly(tuple("INFANTRY", 10L, 4L, 0L, 10L, "PLAYER"));
     assertThat(nodeById(pathA, "aaaaaaaa-0000-0000-0000-000000000002").getGroupInfoDtos())
         .isEmpty();
     assertThat(nodeById(pathA, "aaaaaaaa-0000-0000-0000-000000000003").getGroupInfoDtos())
-        .extracting(GroupInfoDto::getUnitType, GroupInfoDto::getCount, GroupInfoDto::getOwner)
-        .containsExactly(tuple("ARCHER", 5L, "ENEMY"), tuple("INFANTRY", 3L, "ENEMY"));
+        .extracting(
+            groupInfoDto -> groupInfoDto.getUnitTypeDto().getName(),
+            groupInfoDto -> groupInfoDto.getUnitTypeDto().getHp(),
+            groupInfoDto -> groupInfoDto.getUnitTypeDto().getAttack(),
+            groupInfoDto -> groupInfoDto.getUnitTypeDto().getOrderInFight(),
+            GroupInfoDto::getCount,
+            GroupInfoDto::getOwner)
+        .containsExactly(
+            tuple("ARCHER", 6L, 7L, 6L, 5L, "ENEMY"), tuple("INFANTRY", 10L, 4L, 0L, 3L, "ENEMY"));
   }
 
   private void assertCombatPathWasResolvedAndMoved(List<PlayerBattlePathInfoDto> pathInfos) {
@@ -166,8 +192,14 @@ class PlayerBattleControllerIntegrationTest extends AbstractIntegrationTest {
     assertThat(nodeById(combatPath, "cccccccc-0000-0000-0000-000000000001").getGroupInfoDtos())
         .isEmpty();
     assertThat(nodeById(combatPath, "cccccccc-0000-0000-0000-000000000002").getGroupInfoDtos())
-        .extracting(GroupInfoDto::getUnitType, GroupInfoDto::getCount, GroupInfoDto::getOwner)
-        .containsExactly(tuple("ARCHER", 3L, "ENEMY"));
+        .extracting(
+            groupInfoDto -> groupInfoDto.getUnitTypeDto().getName(),
+            groupInfoDto -> groupInfoDto.getUnitTypeDto().getHp(),
+            groupInfoDto -> groupInfoDto.getUnitTypeDto().getAttack(),
+            groupInfoDto -> groupInfoDto.getUnitTypeDto().getOrderInFight(),
+            GroupInfoDto::getCount,
+            GroupInfoDto::getOwner)
+        .containsExactly(tuple("ARCHER", 6L, 7L, 6L, 3L, "ENEMY"));
   }
 
   private void seedExistingPlayerBattlePaths() {

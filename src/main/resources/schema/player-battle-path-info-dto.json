@@ -20,8 +20,28 @@
             "items": {
               "type": "object",
               "properties": {
-                "unitType": {
-                  "type": "string"
+                "unitTypeDto": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "hp": {
+                      "type": "integer"
+                    },
+                    "attack": {
+                      "type": "integer"
+                    },
+                    "orderInFight": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "hp",
+                    "attack",
+                    "orderInFight"
+                  ]
                 },
                 "count": {
                   "type": "integer"
@@ -31,7 +51,7 @@
                 }
               },
               "required": [
-                "unitType",
+                "unitTypeDto",
                 "count",
                 "owner"
               ]
