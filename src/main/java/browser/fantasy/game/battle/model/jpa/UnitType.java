@@ -7,8 +7,8 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "unit_type")
 @Data
+@Table(name = "unit_type")
 public class UnitType {
 
   @Id

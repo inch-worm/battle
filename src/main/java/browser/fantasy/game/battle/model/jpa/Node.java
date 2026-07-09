@@ -12,8 +12,10 @@ import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import lombok.Data;
 
 @Entity
+@Data
 @Table(name = "node")
 public class Node {
 
@@ -34,43 +36,6 @@ public class Node {
   @OneToMany(mappedBy = "node", cascade = CascadeType.ALL)
   private List<GroupInfo> groupInfos = new ArrayList<>();
 
-  public UUID getId() {
-    return id;
-  }
-
-  public void setId(UUID id) {
-    this.id = id;
-  }
-
-  public PlayerBattlePathInfo getPath() {
-    return path;
-  }
-
-  public void setPath(PlayerBattlePathInfo path) {
-    this.path = path;
-  }
-
-  public Integer getXCoordinate() {
-    return xCoordinate;
-  }
-
-  public void setXCoordinate(Integer xCoordinate) {
-    this.xCoordinate = xCoordinate;
-  }
-
-  public Integer getYCoordinate() {
-    return yCoordinate;
-  }
-
-  public void setYCoordinate(Integer yCoordinate) {
-    this.yCoordinate = yCoordinate;
-  }
-
-  public List<GroupInfo> getGroupInfos() {
-    return groupInfos;
-  }
-
-  public void setGroupInfos(List<GroupInfo> groupInfos) {
-    this.groupInfos = groupInfos;
-  }
+  @Column(name = "is_root", nullable = false)
+  private boolean isRoot = false;
 }

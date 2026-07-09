@@ -13,8 +13,8 @@ import java.util.UUID;
 import lombok.Data;
 
 @Entity
-@Table(name = "group_info")
 @Data
+@Table(name = "group_info")
 public class GroupInfo {
 
   @Id

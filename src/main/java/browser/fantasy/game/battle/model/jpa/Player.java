@@ -5,8 +5,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.util.UUID;
+import lombok.Data;
 
 @Entity
+@Data
 @Table(name = "player")
 public class Player {
 
@@ -20,27 +22,6 @@ public class Player {
   @Column(name = "password", nullable = false)
   private String password;
 
-  public UUID getId() {
-    return id;
-  }
-
-  public void setId(UUID id) {
-    this.id = id;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public String getPassword() {
-    return password;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
-  }
+  @Column(name = "hp", nullable = false)
+  private Integer hp;
 }

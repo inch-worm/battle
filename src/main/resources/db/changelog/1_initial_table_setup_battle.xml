@@ -33,13 +33,12 @@
             <column name="id" type="uuid">
                 <constraints primaryKey="true"/>
             </column>
-
             <column name="path_id" type="uuid">
                 <constraints nullable="false"/>
             </column>
-
             <column name="x_coordinate" type="int"/>
             <column name="y_coordinate" type="int"/>
+            <column name="is_root" type="boolean" defaultValueBoolean="false"/>
         </createTable>
         <addForeignKeyConstraint
                 baseTableName="node"

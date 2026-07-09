@@ -47,6 +47,12 @@ public class PlayerBattleCombatService {
                                 groupAttacksPerNodeEnemy.put(
                                     currentNodeId,
                                     new GroupAttack(attackers, node, defenders, destinationNode));
+                              } else {
+                                playerBattlePathInfo
+                                    .getPlayer()
+                                    .setHp(
+                                        playerBattlePathInfo.getPlayer().getHp()
+                                            - getSummedAttackValueOfGroup(attackers));
                               }
                             }
                           }
@@ -56,14 +62,8 @@ public class PlayerBattleCombatService {
   }
 
   private void resolveFightOutcome(GroupAttack groupAttack) {
-    int attackersAttack =
-        groupAttack.attackers().stream()
-            .mapToInt(a -> a.getCount() * a.getUnitType().getAttack())
-            .sum();
-    int defendersAttack =
-        groupAttack.defenders().stream()
-            .mapToInt(d -> d.getCount() * d.getUnitType().getAttack())
-            .sum();
+    int attackersAttack = getSummedAttackValueOfGroup(groupAttack.attackers());
+    int defendersAttack = getSummedAttackValueOfGroup(groupAttack.defenders());
 
     List<GroupInfo> defenderCasualties = new ArrayList<>();
     for (GroupInfo d :
@@ -103,6 +103,10 @@ public class PlayerBattleCombatService {
           groupAttack.attackersNode().getGroupInfos().remove(ac);
           groupInfoRepository.deleteById(ac.getId());
         });
+  }
+
+  private int getSummedAttackValueOfGroup(List<GroupInfo> groupAttack) {
+    return groupAttack.stream().mapToInt(a -> a.getCount() * a.getUnitType().getAttack()).sum();
   }
 
   private record GroupAttack(
