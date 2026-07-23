@@ -12,9 +12,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class PlayerBattlePathInfoMapper {
 
-  public PlayerBattlePathInfoDto mapPlayerBattleInfoToPlayerBattleInfoDto(
+  public PathDto mapPlayerBattleInfoToPlayerBattleInfoDto(
       PlayerBattlePathInfo playerBattlePathInfo) {
-    return new PlayerBattlePathInfoDto()
+    return new PathDto()
         .withNodeDtos(
             playerBattlePathInfo.getNodes().stream()
                 .sorted(Comparator.comparing(Node::getId))

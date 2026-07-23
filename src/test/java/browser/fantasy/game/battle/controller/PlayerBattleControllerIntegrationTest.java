@@ -5,10 +5,6 @@ import static org.assertj.core.api.Assertions.tuple;
 import static org.springframework.http.HttpStatus.OK;
 
 import browser.fantasy.game.battle.AbstractIntegrationTest;
-import browser.fantasy.game.battle.EdgeDto;
-import browser.fantasy.game.battle.GroupInfoDto;
-import browser.fantasy.game.battle.NodeDto;
-import browser.fantasy.game.battle.PlayerBattlePathInfoDto;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,8 +1,7 @@
 package browser.fantasy.game.battle.controller;
 
-import browser.fantasy.game.battle.PlayerBattlePathInfoDto;
+import browser.fantasy.game.battle.PlayerBattleInfoDto;
 import browser.fantasy.game.battle.service.PlayerBattleFacade;
-import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,13 +17,12 @@ public class PlayerBattleController {
   }
 
   @GetMapping("/playerBattlePathInfoDtos/{playerId}")
-  public List<PlayerBattlePathInfoDto> getCurrentPlayerBattlePathInfoDtos(
-      @PathVariable String playerId) {
+  public PlayerBattleInfoDto getCurrentPlayerBattlePathInfoDtos(@PathVariable String playerId) {
     return playerBattleFacade.getPlayerBattlePathInfoDtos(playerId);
   }
 
   @PostMapping("/playerBattlePathNextTurn/{playerId}")
-  public List<PlayerBattlePathInfoDto> playerBattlePathNextTurn(@PathVariable String playerId) {
+  public PlayerBattleInfoDto playerBattlePathNextTurn(@PathVariable String playerId) {
     return playerBattleFacade.playerBattlePathNextTurn(playerId);
   }
 }

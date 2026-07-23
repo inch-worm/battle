@@ -1,6 +1,7 @@
 package browser.fantasy.game.battle.service;
 
-import browser.fantasy.game.battle.PlayerBattlePathInfoDto;
+import browser.fantasy.game.battle.PathDto;
+import browser.fantasy.game.battle.PlayerBattleInfoDto;
 import browser.fantasy.game.battle.mapper.PlayerBattlePathInfoMapper;
 import browser.fantasy.game.battle.model.jpa.Node;
 import browser.fantasy.game.battle.model.jpa.PlayerBattlePathInfo;
@@ -31,14 +32,18 @@ public class PlayerBattleFacade {
     this.playerBattlePathInfoMapper = playerBattlePathInfoMapper;
   }
 
-  public List<PlayerBattlePathInfoDto> getPlayerBattlePathInfoDtos(String playerId) {
-    return playerBattleService.getPlayerBattlePathInfos(playerId).stream()
-        .map(playerBattlePathInfoMapper::mapPlayerBattleInfoToPlayerBattleInfoDto)
-        .toList();
+  public PlayerBattleInfoDto getPlayerBattlePathInfoDtos(String playerId) {
+    List<PlayerBattlePathInfo> playerBattlePathInfos =
+        playerBattleService.getPlayerBattlePathInfos(playerId);
+    List<PathDto> pathDtos =
+        playerBattlePathInfos.stream()
+            .map(playerBattlePathInfoMapper::mapPlayerBattleInfoToPlayerBattleInfoDto)
+            .toList();
+    return new PlayerBattleInfoDto().withPathDtos(pathDtos);
   }
 
   @Transactional
-  public List<PlayerBattlePathInfoDto> playerBattlePathNextTurn(String playerId) {
+  public PlayerBattleInfoDto playerBattlePathNextTurn(String playerId) {
     List<PlayerBattlePathInfo> playerBattlePathInfos =
         playerBattleService.getPlayerBattlePathInfos(playerId);
     for (PlayerBattlePathInfo playerBattlePathInfo : playerBattlePathInfos) {
@@ -65,8 +70,10 @@ public class PlayerBattleFacade {
           playerBattlePathInfo, nextNodeIdsByNodeId, nodesById);
     }
 
-    return playerBattlePathInfos.stream()
-        .map(playerBattlePathInfoMapper::mapPlayerBattleInfoToPlayerBattleInfoDto)
-        .toList();
+    List<PathDto> pathDtos =
+        playerBattlePathInfos.stream()
+            .map(playerBattlePathInfoMapper::mapPlayerBattleInfoToPlayerBattleInfoDto)
+            .toList();
+    return new PlayerBattleInfoDto().withPathDtos(pathDtos);
   }
 }
