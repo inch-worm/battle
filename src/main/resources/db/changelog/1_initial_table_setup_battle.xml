@@ -108,9 +108,7 @@
             <column name="id" type="uuid">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="node_id" type="uuid">
-                <constraints nullable="false"/>
-            </column>
+            <column name="node_id" type="uuid"/>
             <column name="unit_type" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>

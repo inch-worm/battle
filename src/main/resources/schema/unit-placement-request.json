@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "$defs": {
+    "unitPlacementDto": {
+      "type": "object",
+      "properties": {
+        "unplacedGroupInfoId": {
+          "type": "string"
+        },
+        "nodeId": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "nodeId"
+      ]
+    }
+  },
+  "properties": {
+    "unitPlacementDtos": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/unitPlacementDto"
+      },
+      "required": [
+        "unitPlacementDto"
+      ]
+    }
+  }
+}

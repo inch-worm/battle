@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.springframework.http.HttpStatus.OK;
 
-import browser.fantasy.game.battle.AbstractIntegrationTest;
+import browser.fantasy.game.battle.*;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,19 +30,19 @@ class PlayerBattleControllerIntegrationTest extends AbstractIntegrationTest {
   void shouldReturnPlayerBattlePathInfoDtosForExistingPlayer() {
     seedExistingPlayerBattlePaths();
 
-    ResponseEntity<PlayerBattlePathInfoDto[]> response =
+    ResponseEntity<PlayerBattleInfoDto[]> response =
         restClient
             .get()
             .uri("/playerBattlePathInfoDtos/{playerId}", EXISTING_PLAYER_ID)
             .retrieve()
-            .toEntity(PlayerBattlePathInfoDto[].class);
+            .toEntity(PlayerBattleInfoDto[].class);
 
     assertThat(response.getStatusCode()).isEqualTo(OK);
 
-    List<PlayerBattlePathInfoDto> pathInfos = Arrays.asList(response.getBody());
+    List<PlayerBattleInfoDto> pathInfos = Arrays.asList(response.getBody());
     assertThat(pathInfos).hasSize(2);
 
-    PlayerBattlePathInfoDto pathA =
+    PlayerBattleInfoDto pathA =
         pathInfos.stream()
             .filter(pathInfo -> pathInfo.getNodeDtos().size() == 3)
             .findFirst()
@@ -85,12 +85,12 @@ class PlayerBattleControllerIntegrationTest extends AbstractIntegrationTest {
 
   @Test
   void shouldReturnEmptyListWhenPlayerHasNoBattlePathInfoDtos() {
-    ResponseEntity<PlayerBattlePathInfoDto[]> response =
+    ResponseEntity<PlayerBattleInfoDto[]> response =
         restClient
             .get()
             .uri("/playerBattlePathInfoDtos/{playerId}", "22222222-2222-2222-2222-222222222222")
             .retrieve()
-            .toEntity(PlayerBattlePathInfoDto[].class);
+            .toEntity(PlayerBattleInfoDto[].class);
 
     assertThat(response.getStatusCode()).isEqualTo(OK);
     assertThat(response.getBody()).isEmpty();
@@ -100,21 +100,21 @@ class PlayerBattleControllerIntegrationTest extends AbstractIntegrationTest {
   void shouldMoveUnblockedUnitsOneNodeAndPersistTurnResult() {
     seedExistingPlayerBattlePaths();
 
-    ResponseEntity<PlayerBattlePathInfoDto[]> nextTurnResponse =
+    ResponseEntity<PlayerBattleInfoDto[]> nextTurnResponse =
         restClient
             .post()
             .uri("/playerBattlePathNextTurn/{playerId}", EXISTING_PLAYER_ID)
             .retrieve()
-            .toEntity(PlayerBattlePathInfoDto[].class);
+            .toEntity(PlayerBattleInfoDto[].class);
 
     assertThat(nextTurnResponse.getStatusCode()).isEqualTo(OK);
 
-    ResponseEntity<PlayerBattlePathInfoDto[]> currentStateResponse =
+    ResponseEntity<PlayerBattleInfoDto[]> currentStateResponse =
         restClient
             .get()
             .uri("/playerBattlePathInfoDtos/{playerId}", EXISTING_PLAYER_ID)
             .retrieve()
-            .toEntity(PlayerBattlePathInfoDto[].class);
+            .toEntity(PlayerBattleInfoDto[].class);
 
     assertThat(currentStateResponse.getStatusCode()).isEqualTo(OK);
     assertPathAUnitsWereMovedAccordingToProductionRules(Arrays.asList(nextTurnResponse.getBody()));
@@ -126,21 +126,21 @@ class PlayerBattleControllerIntegrationTest extends AbstractIntegrationTest {
   void shouldResolveCombatBeforeMovingSurvivingEnemyUnitsAndPersistTurnResult() {
     seedCombatPath();
 
-    ResponseEntity<PlayerBattlePathInfoDto[]> nextTurnResponse =
+    ResponseEntity<PlayerBattleInfoDto[]> nextTurnResponse =
         restClient
             .post()
             .uri("/playerBattlePathNextTurn/{playerId}", EXISTING_PLAYER_ID)
             .retrieve()
-            .toEntity(PlayerBattlePathInfoDto[].class);
+            .toEntity(PlayerBattleInfoDto[].class);
 
     assertThat(nextTurnResponse.getStatusCode()).isEqualTo(OK);
 
-    ResponseEntity<PlayerBattlePathInfoDto[]> currentStateResponse =
+    ResponseEntity<PlayerBattleInfoDto[]> currentStateResponse =
         restClient
             .get()
             .uri("/playerBattlePathInfoDtos/{playerId}", EXISTING_PLAYER_ID)
             .retrieve()
-            .toEntity(PlayerBattlePathInfoDto[].class);
+            .toEntity(PlayerBattleInfoDto[].class);
 
     assertThat(currentStateResponse.getStatusCode()).isEqualTo(OK);
     assertCombatPathWasResolvedAndMoved(Arrays.asList(nextTurnResponse.getBody()));
@@ -148,8 +148,8 @@ class PlayerBattleControllerIntegrationTest extends AbstractIntegrationTest {
   }
 
   private void assertPathAUnitsWereMovedAccordingToProductionRules(
-      List<PlayerBattlePathInfoDto> pathInfos) {
-    PlayerBattlePathInfoDto pathA =
+      List<PlayerBattleInfoDto> pathInfos) {
+    PlayerBattleInfoDto pathA =
         pathInfos.stream()
             .filter(pathInfo -> pathInfo.getNodeDtos().size() == 3)
             .findFirst()
@@ -178,8 +178,8 @@ class PlayerBattleControllerIntegrationTest extends AbstractIntegrationTest {
             tuple("ARCHER", 6L, 7L, 6L, 5L, "ENEMY"), tuple("INFANTRY", 10L, 4L, 0L, 3L, "ENEMY"));
   }
 
-  private void assertCombatPathWasResolvedAndMoved(List<PlayerBattlePathInfoDto> pathInfos) {
-    PlayerBattlePathInfoDto combatPath =
+  private void assertCombatPathWasResolvedAndMoved(List<PlayerBattleInfoDto> pathInfos) {
+    PlayerBattleInfoDto combatPath =
         pathInfos.stream()
             .filter(pathInfo -> pathInfo.getNodeDtos().size() == 2)
             .findFirst()
@@ -288,7 +288,7 @@ class PlayerBattleControllerIntegrationTest extends AbstractIntegrationTest {
         "cccccccc-0000-0000-0000-000000000002");
   }
 
-  private NodeDto nodeById(PlayerBattlePathInfoDto pathInfo, String nodeId) {
+  private NodeDto nodeById(PlayerBattleInfoDto pathInfo, String nodeId) {
     return pathInfo.getNodeDtos().stream()
         .filter(nodeDto -> nodeDto.getId().equals(nodeId))
         .findFirst()

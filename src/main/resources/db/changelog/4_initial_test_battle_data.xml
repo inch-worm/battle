@@ -237,7 +237,6 @@
 
         <insert tableName="group_info">
             <column name="id" value="cccccccc-cccc-cccc-cccc-000000000103"/>
-            <column name="node_id" value="cccccccc-0000-0000-0000-000000000004"/>
             <column name="unit_type" value="ARCHER"/>
             <column name="count" valueNumeric="6"/>
             <column name="owner" value="PLAYER"/>

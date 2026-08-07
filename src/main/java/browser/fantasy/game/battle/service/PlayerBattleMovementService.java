@@ -1,9 +1,12 @@
 package browser.fantasy.game.battle.service;
 
+import browser.fantasy.game.battle.UnitPlacementRequest;
+import browser.fantasy.game.battle.model.ServiceException;
 import browser.fantasy.game.battle.model.jpa.GroupInfo;
 import browser.fantasy.game.battle.model.jpa.Node;
 import browser.fantasy.game.battle.model.jpa.PlayerBattlePathInfo;
 import browser.fantasy.game.battle.model.jpa.UnitOwner;
+import browser.fantasy.game.battle.model.repository.GroupInfoRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +15,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PlayerBattleMovementService {
+
+  private final GroupInfoRepository groupInfoRepository;
+
+  public PlayerBattleMovementService(GroupInfoRepository groupInfoRepository) {
+    this.groupInfoRepository = groupInfoRepository;
+  }
 
   public void moveEnemyGroups(
       PlayerBattlePathInfo playerBattlePathInfo,
@@ -72,6 +81,27 @@ public class PlayerBattleMovementService {
     groupMove.fromNode().getGroupInfos().remove(groupMove.groupInfo());
     groupMove.groupInfo().setNode(groupMove.toNode());
     groupMove.toNode().getGroupInfos().add(groupMove.groupInfo());
+  }
+
+  public void placePlayerUnits(
+      Map<UUID, Node> nodesById, UnitPlacementRequest unitPlacementRequest) {
+
+    unitPlacementRequest
+        .getUnitPlacementDtos()
+        .forEach(
+            unitPlacementDto -> {
+              GroupInfo groupInfo =
+                  groupInfoRepository
+                      .findById(UUID.fromString(unitPlacementDto.getUnplacedGroupInfoId()))
+                      .orElseThrow(
+                          () ->
+                              new ServiceException(
+                                  "Invalid unit placement id passed "
+                                      + unitPlacementDto.getUnplacedGroupInfoId(),
+                                  "IUPIP"));
+              groupInfo.setNode(nodesById.get(UUID.fromString(unitPlacementDto.getNodeId())));
+              groupInfoRepository.save(groupInfo);
+            });
   }
 
   private record GroupMove(GroupInfo groupInfo, Node fromNode, Node toNode) {}

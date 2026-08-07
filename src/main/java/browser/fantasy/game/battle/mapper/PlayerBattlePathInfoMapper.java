@@ -27,16 +27,7 @@ public class PlayerBattlePathInfoMapper {
                             .withGroupInfoDtos(
                                 node.getGroupInfos().stream()
                                     .sorted(Comparator.comparing(GroupInfo::getId))
-                                    .map(
-                                        groupInfo ->
-                                            new GroupInfoDto()
-                                                .withUnitTypeDto(
-                                                    mapUnitType(groupInfo.getUnitType()))
-                                                .withCount(toLong(groupInfo.getCount()))
-                                                .withOwner(
-                                                    groupInfo.getOwner() == null
-                                                        ? null
-                                                        : groupInfo.getOwner().name()))
+                                    .map(this::mapGroupInfo)
                                     .toList()))
                 .toList())
         .withEdgeDtos(
@@ -48,6 +39,14 @@ public class PlayerBattlePathInfoMapper {
                             .withFromNodeId(edge.getFromNode().getId().toString())
                             .withToNodeId(edge.getToNode().getId().toString()))
                 .toList());
+  }
+
+  public GroupInfoDto mapGroupInfo(GroupInfo groupInfo) {
+    return new GroupInfoDto()
+        .withId(groupInfo.getId().toString())
+        .withUnitTypeDto(mapUnitType(groupInfo.getUnitType()))
+        .withCount(toLong(groupInfo.getCount()))
+        .withOwner(groupInfo.getOwner() == null ? null : groupInfo.getOwner().name());
   }
 
   private UnitTypeDto mapUnitType(UnitType unitType) {

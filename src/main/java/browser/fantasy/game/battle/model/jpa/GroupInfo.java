@@ -10,10 +10,17 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.util.UUID;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "group_info")
 public class GroupInfo {
 
@@ -22,7 +29,7 @@ public class GroupInfo {
   private UUID id;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "node_id", nullable = false)
+  @JoinColumn(name = "node_id")
   private Node node;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)

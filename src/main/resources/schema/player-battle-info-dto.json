@@ -5,6 +5,9 @@
     "groupInfoDto": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "string"
+        },
         "unitTypeDto": {
           "type": "object",
           "properties": {
@@ -36,6 +39,7 @@
         }
       },
       "required": [
+        "id",
         "unitTypeDto",
         "count",
         "owner"

@@ -1,11 +1,9 @@
 package browser.fantasy.game.battle.controller;
 
 import browser.fantasy.game.battle.PlayerBattleInfoDto;
+import browser.fantasy.game.battle.UnitPlacementRequest;
 import browser.fantasy.game.battle.service.PlayerBattleFacade;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class PlayerBattleController {
@@ -22,7 +20,8 @@ public class PlayerBattleController {
   }
 
   @PostMapping("/playerBattlePathNextTurn/{playerId}")
-  public PlayerBattleInfoDto playerBattlePathNextTurn(@PathVariable String playerId) {
-    return playerBattleFacade.playerBattlePathNextTurn(playerId);
+  public PlayerBattleInfoDto playerBattlePathNextTurn(
+      @PathVariable String playerId, @RequestBody UnitPlacementRequest unitPlacementRequest) {
+    return playerBattleFacade.playerBattlePathNextTurn(playerId, unitPlacementRequest);
   }
 }
