@@ -85,7 +85,8 @@ public class PlayerBattleFacade {
     return mapPlayerBattleInfo(playerBattlePathInfos);
   }
 
-  private PlayerBattleInfoDto mapPlayerBattleInfo(List<PlayerBattlePathInfo> playerBattlePathInfos) {
+  private PlayerBattleInfoDto mapPlayerBattleInfo(
+      List<PlayerBattlePathInfo> playerBattlePathInfos) {
     List<PathDto> pathDtos =
         playerBattlePathInfos.stream()
             .map(playerBattlePathInfoMapper::mapPlayerBattleInfoToPlayerBattleInfoDto)
