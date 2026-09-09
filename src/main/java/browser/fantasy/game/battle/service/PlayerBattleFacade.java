@@ -51,12 +51,6 @@ public class PlayerBattleFacade {
       String playerId, UnitPlacementRequest unitPlacementRequest) {
     List<PlayerBattlePathInfo> playerBattlePathInfos =
         playerBattleService.getPlayerBattlePathInfos(playerId);
-    Map<UUID, Node> allNodesById =
-        playerBattlePathInfos.stream()
-            .flatMap(playerBattlePathInfo -> playerBattlePathInfo.getNodes().stream())
-            .collect(Collectors.toMap(Node::getId, Function.identity()));
-
-    playerBattleMovementService.placePlayerUnits(allNodesById, unitPlacementRequest);
 
     for (PlayerBattlePathInfo playerBattlePathInfo : playerBattlePathInfos) {
       Map<UUID, Node> nodesById =
@@ -81,6 +75,12 @@ public class PlayerBattleFacade {
       playerBattleMovementService.movePlayerGroups(
           playerBattlePathInfo, nextNodeIdsByNodeId, nodesById);
     }
+
+      Map<UUID, Node> allNodesById =
+              playerBattlePathInfos.stream()
+                      .flatMap(playerBattlePathInfo -> playerBattlePathInfo.getNodes().stream())
+                      .collect(Collectors.toMap(Node::getId, Function.identity()));
+      playerBattleMovementService.placePlayerUnits(allNodesById, unitPlacementRequest);
 
     return mapPlayerBattleInfo(playerBattlePathInfos);
   }

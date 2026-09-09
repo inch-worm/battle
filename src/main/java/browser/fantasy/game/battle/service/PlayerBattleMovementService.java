@@ -99,7 +99,9 @@ public class PlayerBattleMovementService {
                                   "Invalid unit placement id passed "
                                       + unitPlacementDto.getUnplacedGroupInfoId(),
                                   "IUPIP"));
-              groupInfo.setNode(nodesById.get(UUID.fromString(unitPlacementDto.getNodeId())));
+                Node node = nodesById.get(UUID.fromString(unitPlacementDto.getNodeId()));
+                groupInfo.setNode(node);
+                node.getGroupInfos().add(groupInfo);
               groupInfoRepository.save(groupInfo);
             });
   }
