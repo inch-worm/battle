@@ -68,7 +68,7 @@ public class PlayerBattleMovementService {
                           if (destinationNodeId != null) {
                             Node destinationNode = nodesById.get(destinationNodeId);
                             if (destinationNode.getGroupInfos().stream()
-                                .noneMatch(gi -> UnitOwner.ENEMY.equals(gi.getOwner()))) {
+                                .noneMatch(gi -> UnitOwner.ENEMY.equals(gi.getOwner())) && !destinationNode.isLeaf()) {
                               groupMovesPlayer.add(new GroupMove(groupInfo, node, destinationNode));
                             }
                           }

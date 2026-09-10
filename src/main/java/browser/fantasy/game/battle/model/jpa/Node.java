@@ -38,4 +38,7 @@ public class Node {
 
   @Column(name = "is_root", nullable = false)
   private boolean isRoot = false;
+
+  @Column(name = "is_leaf", nullable = false)
+  private boolean isLeaf = false;
 }

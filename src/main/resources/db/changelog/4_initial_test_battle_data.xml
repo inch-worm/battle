@@ -30,6 +30,7 @@
             <column name="path_id" value="aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"/>
             <column name="x_coordinate" valueNumeric="1"/>
             <column name="y_coordinate" valueNumeric="2"/>
+            <column name="is_leaf" valueBoolean="true"/>
         </insert>
 
         <insert tableName="node">
@@ -105,6 +106,7 @@
             <column name="path_id" value="bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"/>
             <column name="x_coordinate" valueNumeric="5"/>
             <column name="y_coordinate" valueNumeric="1"/>
+            <column name="is_leaf" valueBoolean="true"/>
         </insert>
 
         <insert tableName="node">
@@ -186,6 +188,7 @@
             <column name="path_id" value="cccccccc-cccc-cccc-cccc-cccccccccccc"/>
             <column name="x_coordinate" valueNumeric="9"/>
             <column name="y_coordinate" valueNumeric="0"/>
+            <column name="is_leaf" valueBoolean="true"/>
         </insert>
 
         <insert tableName="node">
@@ -234,13 +237,6 @@
             <column name="count" valueNumeric="4"/>
             <column name="owner" value="PLAYER"/>
         </insert>
-
-        <insert tableName="group_info">
-            <column name="id" value="cccccccc-cccc-cccc-cccc-000000000103"/>
-            <column name="unit_type" value="ARCHER"/>
-            <column name="count" valueNumeric="6"/>
-            <column name="owner" value="PLAYER"/>
-        </insert>
     </changeSet>
 
     <changeSet id="112-edges-c" author="inchworm">
@@ -270,6 +266,21 @@
             <column name="path_id" value="cccccccc-cccc-cccc-cccc-cccccccccccc"/>
             <column name="from_node_id" value="cccccccc-0000-0000-0000-000000000004"/>
             <column name="to_node_id" value="cccccccc-0000-0000-0000-000000000005"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="113-unplaced-groups" author="inchworm">
+        <insert tableName="group_info">
+            <column name="id" value="dddddddd-dddd-dddd-dddd-000000000101"/>
+            <column name="unit_type" value="ARCHER"/>
+            <column name="count" valueNumeric="6"/>
+            <column name="owner" value="PLAYER"/>
+        </insert>
+        <insert tableName="group_info">
+            <column name="id" value="dddddddd-dddd-dddd-dddd-000000000102"/>
+            <column name="unit_type" value="CAVALRY"/>
+            <column name="count" valueNumeric="4"/>
+            <column name="owner" value="ENEMY"/>
         </insert>
     </changeSet>
 </databaseChangeLog>
