@@ -14,9 +14,9 @@ public class PlayerBattleController {
     this.playerBattleFacade = playerBattleFacade;
   }
 
-  @GetMapping("/playerBattlePathInfoDtos/{playerId}")
-  public PlayerBattleInfoDto getCurrentPlayerBattlePathInfoDtos(@PathVariable String playerId) {
-    return playerBattleFacade.getPlayerBattlePathInfoDtos(playerId);
+  @GetMapping("/currentPlayerBattlePathInfoDto/{playerId}")
+  public PlayerBattleInfoDto getCurrentPlayerBattleInfoDto(@PathVariable String playerId) {
+    return playerBattleFacade.getCurrentPlayerBattleInfoDto(playerId);
   }
 
   @PostMapping("/playerBattlePathNextTurn/{playerId}")

@@ -4,19 +4,18 @@ import browser.fantasy.game.battle.*;
 import browser.fantasy.game.battle.model.jpa.Edge;
 import browser.fantasy.game.battle.model.jpa.GroupInfo;
 import browser.fantasy.game.battle.model.jpa.Node;
-import browser.fantasy.game.battle.model.jpa.PlayerBattlePathInfo;
+import browser.fantasy.game.battle.model.jpa.Path;
 import browser.fantasy.game.battle.model.jpa.UnitType;
 import java.util.Comparator;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PlayerBattlePathInfoMapper {
+public class PlayerBattleInfoMapper {
 
-  public PathDto mapPlayerBattleInfoToPlayerBattleInfoDto(
-      PlayerBattlePathInfo playerBattlePathInfo) {
+  public PathDto mapPathToPathDto(Path path) {
     return new PathDto()
         .withNodeDtos(
-            playerBattlePathInfo.getNodes().stream()
+            path.getNodes().stream()
                 .sorted(Comparator.comparing(Node::getId))
                 .map(
                     node ->
@@ -31,7 +30,7 @@ public class PlayerBattlePathInfoMapper {
                                     .toList()))
                 .toList())
         .withEdgeDtos(
-            playerBattlePathInfo.getEdges().stream()
+            path.getEdges().stream()
                 .sorted(Comparator.comparing(Edge::getId))
                 .map(
                     edge ->
@@ -39,6 +38,12 @@ public class PlayerBattlePathInfoMapper {
                             .withFromNodeId(edge.getFromNode().getId().toString())
                             .withToNodeId(edge.getToNode().getId().toString()))
                 .toList());
+  }
+
+  public UnplacedGroupDto mapUnplacedGroupInfoToUnplacedGroupDto(GroupInfo groupInfo) {
+    return new UnplacedGroupDto()
+        .withGroupInfoDto(mapGroupInfo(groupInfo))
+        .withCount(groupInfo.getCount() == null ? null : groupInfo.getCount().longValue());
   }
 
   public GroupInfoDto mapGroupInfo(GroupInfo groupInfo) {

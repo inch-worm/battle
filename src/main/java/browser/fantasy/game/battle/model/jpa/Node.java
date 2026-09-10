@@ -25,7 +25,7 @@ public class Node {
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "path_id", nullable = false)
-  private PlayerBattlePathInfo path;
+  private Path path;
 
   @Column(name = "x_coordinate")
   private Integer xCoordinate;

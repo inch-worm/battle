@@ -4,7 +4,7 @@ import browser.fantasy.game.battle.UnitPlacementRequest;
 import browser.fantasy.game.battle.model.ServiceException;
 import browser.fantasy.game.battle.model.jpa.GroupInfo;
 import browser.fantasy.game.battle.model.jpa.Node;
-import browser.fantasy.game.battle.model.jpa.PlayerBattlePathInfo;
+import browser.fantasy.game.battle.model.jpa.Path;
 import browser.fantasy.game.battle.model.jpa.UnitOwner;
 import browser.fantasy.game.battle.model.repository.GroupInfoRepository;
 import java.util.ArrayList;
@@ -23,12 +23,9 @@ public class PlayerBattleMovementService {
   }
 
   public void moveEnemyGroups(
-      PlayerBattlePathInfo playerBattlePathInfo,
-      Map<UUID, UUID> previousNodeIdsByNodeId,
-      Map<UUID, Node> nodesById) {
+      Path path, Map<UUID, UUID> previousNodeIdsByNodeId, Map<UUID, Node> nodesById) {
     List<GroupMove> groupMovesEnemy = new ArrayList<>();
-    playerBattlePathInfo
-        .getNodes()
+    path.getNodes()
         .forEach(
             node ->
                 node.getGroupInfos().stream()
@@ -51,12 +48,9 @@ public class PlayerBattleMovementService {
   }
 
   public void movePlayerGroups(
-      PlayerBattlePathInfo playerBattlePathInfo,
-      Map<UUID, UUID> nextNodeIdsByNodeId,
-      Map<UUID, Node> nodesById) {
+      Path path, Map<UUID, UUID> nextNodeIdsByNodeId, Map<UUID, Node> nodesById) {
     List<GroupMove> groupMovesPlayer = new ArrayList<>();
-    playerBattlePathInfo
-        .getNodes()
+    path.getNodes()
         .forEach(
             node ->
                 node.getGroupInfos().stream()
@@ -68,7 +62,8 @@ public class PlayerBattleMovementService {
                           if (destinationNodeId != null) {
                             Node destinationNode = nodesById.get(destinationNodeId);
                             if (destinationNode.getGroupInfos().stream()
-                                .noneMatch(gi -> UnitOwner.ENEMY.equals(gi.getOwner())) && !destinationNode.isLeaf()) {
+                                    .noneMatch(gi -> UnitOwner.ENEMY.equals(gi.getOwner()))
+                                && !destinationNode.isLeaf()) {
                               groupMovesPlayer.add(new GroupMove(groupInfo, node, destinationNode));
                             }
                           }
@@ -99,9 +94,9 @@ public class PlayerBattleMovementService {
                                   "Invalid unit placement id passed "
                                       + unitPlacementDto.getUnplacedGroupInfoId(),
                                   "IUPIP"));
-                Node node = nodesById.get(UUID.fromString(unitPlacementDto.getNodeId()));
-                groupInfo.setNode(node);
-                node.getGroupInfos().add(groupInfo);
+              Node node = nodesById.get(UUID.fromString(unitPlacementDto.getNodeId()));
+              groupInfo.setNode(node);
+              node.getGroupInfos().add(groupInfo);
               groupInfoRepository.save(groupInfo);
             });
   }

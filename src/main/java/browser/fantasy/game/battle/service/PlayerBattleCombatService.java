@@ -2,7 +2,7 @@ package browser.fantasy.game.battle.service;
 
 import browser.fantasy.game.battle.model.jpa.GroupInfo;
 import browser.fantasy.game.battle.model.jpa.Node;
-import browser.fantasy.game.battle.model.jpa.PlayerBattlePathInfo;
+import browser.fantasy.game.battle.model.jpa.Path;
 import browser.fantasy.game.battle.model.jpa.UnitOwner;
 import browser.fantasy.game.battle.model.repository.GroupInfoRepository;
 import java.util.*;
@@ -19,12 +19,9 @@ public class PlayerBattleCombatService {
   }
 
   public void resolveFightOutcomes(
-      PlayerBattlePathInfo playerBattlePathInfo,
-      Map<UUID, UUID> previousNodeIdsByNodeId,
-      Map<UUID, Node> nodesById) {
+      Path path, Map<UUID, UUID> previousNodeIdsByNodeId, Map<UUID, Node> nodesById) {
     Map<UUID, GroupAttack> groupAttacksPerNodeEnemy = new HashMap<>();
-    playerBattlePathInfo
-        .getNodes()
+    path.getNodes()
         .forEach(
             node ->
                 node.getGroupInfos().stream()
@@ -48,10 +45,9 @@ public class PlayerBattleCombatService {
                                     currentNodeId,
                                     new GroupAttack(attackers, node, defenders, destinationNode));
                               } else {
-                                playerBattlePathInfo
-                                    .getPlayer()
-                                    .setHp(
-                                        playerBattlePathInfo.getPlayer().getHp()
+                                path.getPlayerBattleInfo()
+                                    .setPlayerHp(
+                                        path.getPlayerBattleInfo().getPlayerHp()
                                             - getSummedAttackValueOfGroup(attackers));
                               }
                             }

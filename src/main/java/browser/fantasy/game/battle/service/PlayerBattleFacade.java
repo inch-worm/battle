@@ -4,11 +4,8 @@ import browser.fantasy.game.battle.PathDto;
 import browser.fantasy.game.battle.PlayerBattleInfoDto;
 import browser.fantasy.game.battle.UnitPlacementRequest;
 import browser.fantasy.game.battle.UnplacedGroupDto;
-import browser.fantasy.game.battle.mapper.PlayerBattlePathInfoMapper;
-import browser.fantasy.game.battle.model.jpa.GroupInfo;
-import browser.fantasy.game.battle.model.jpa.Node;
-import browser.fantasy.game.battle.model.jpa.PlayerBattlePathInfo;
-import browser.fantasy.game.battle.model.jpa.UnitOwner;
+import browser.fantasy.game.battle.mapper.PlayerBattleInfoMapper;
+import browser.fantasy.game.battle.model.jpa.*;
 import browser.fantasy.game.battle.model.repository.GroupInfoRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -24,86 +21,72 @@ public class PlayerBattleFacade {
   private final PlayerBattleService playerBattleService;
   private final PlayerBattleMovementService playerBattleMovementService;
   private final PlayerBattleCombatService playerBattleCombatService;
-  private final PlayerBattlePathInfoMapper playerBattlePathInfoMapper;
+  private final PlayerBattleInfoMapper playerBattleInfoMapper;
   private final GroupInfoRepository groupInfoRepository;
 
   public PlayerBattleFacade(
       PlayerBattleService playerBattleService,
       PlayerBattleMovementService playerBattleMovementService,
       PlayerBattleCombatService playerBattleCombatService,
-      PlayerBattlePathInfoMapper playerBattlePathInfoMapper,
+      PlayerBattleInfoMapper playerBattleInfoMapper,
       GroupInfoRepository groupInfoRepository) {
     this.playerBattleService = playerBattleService;
     this.playerBattleMovementService = playerBattleMovementService;
     this.playerBattleCombatService = playerBattleCombatService;
-    this.playerBattlePathInfoMapper = playerBattlePathInfoMapper;
+    this.playerBattleInfoMapper = playerBattleInfoMapper;
     this.groupInfoRepository = groupInfoRepository;
   }
 
-  public PlayerBattleInfoDto getPlayerBattlePathInfoDtos(String playerId) {
-    List<PlayerBattlePathInfo> playerBattlePathInfos =
-        playerBattleService.getPlayerBattlePathInfos(playerId);
-    return mapPlayerBattleInfo(playerBattlePathInfos);
+  public PlayerBattleInfoDto getCurrentPlayerBattleInfoDto(String playerId) {
+    PlayerBattleInfo playerBattleInfo = playerBattleService.getCurrentPlayerBattleInfo(playerId);
+    return mapPlayerBattleInfo(playerBattleInfo);
   }
 
   @Transactional
   public PlayerBattleInfoDto playerBattlePathNextTurn(
       String playerId, UnitPlacementRequest unitPlacementRequest) {
-    List<PlayerBattlePathInfo> playerBattlePathInfos =
-        playerBattleService.getPlayerBattlePathInfos(playerId);
-
-    for (PlayerBattlePathInfo playerBattlePathInfo : playerBattlePathInfos) {
+    PlayerBattleInfo playerBattleInfo = playerBattleService.getCurrentPlayerBattleInfo(playerId);
+    List<Path> paths = playerBattleInfo.getPaths();
+    for (Path path : paths) {
       Map<UUID, Node> nodesById =
-          playerBattlePathInfo.getNodes().stream()
-              .collect(Collectors.toMap(Node::getId, Function.identity()));
+          path.getNodes().stream().collect(Collectors.toMap(Node::getId, Function.identity()));
       Map<UUID, UUID> previousNodeIdsByNodeId =
-          playerBattlePathInfo.getEdges().stream()
+          path.getEdges().stream()
               .collect(
                   Collectors.toMap(
                       edge -> edge.getFromNode().getId(), edge -> edge.getToNode().getId()));
       Map<UUID, UUID> nextNodeIdsByNodeId =
-          playerBattlePathInfo.getEdges().stream()
+          path.getEdges().stream()
               .collect(
                   Collectors.toMap(
                       edge -> edge.getToNode().getId(), edge -> edge.getFromNode().getId()));
 
-      playerBattleCombatService.resolveFightOutcomes(
-          playerBattlePathInfo, previousNodeIdsByNodeId, nodesById);
+      playerBattleCombatService.resolveFightOutcomes(path, previousNodeIdsByNodeId, nodesById);
 
-      playerBattleMovementService.moveEnemyGroups(
-          playerBattlePathInfo, previousNodeIdsByNodeId, nodesById);
-      playerBattleMovementService.movePlayerGroups(
-          playerBattlePathInfo, nextNodeIdsByNodeId, nodesById);
+      playerBattleMovementService.moveEnemyGroups(path, previousNodeIdsByNodeId, nodesById);
+      playerBattleMovementService.movePlayerGroups(path, nextNodeIdsByNodeId, nodesById);
     }
 
-      Map<UUID, Node> allNodesById =
-              playerBattlePathInfos.stream()
-                      .flatMap(playerBattlePathInfo -> playerBattlePathInfo.getNodes().stream())
-                      .collect(Collectors.toMap(Node::getId, Function.identity()));
-      playerBattleMovementService.placePlayerUnits(allNodesById, unitPlacementRequest);
-
-    return mapPlayerBattleInfo(playerBattlePathInfos);
+    Map<UUID, Node> allNodesById =
+        paths.stream()
+            .flatMap(playerBattlePathInfo -> playerBattlePathInfo.getNodes().stream())
+            .collect(Collectors.toMap(Node::getId, Function.identity()));
+    playerBattleMovementService.placePlayerUnits(allNodesById, unitPlacementRequest);
+    playerBattleInfo.setTurnCount(playerBattleInfo.getTurnCount() + 1);
+    return mapPlayerBattleInfo(playerBattleInfo);
   }
 
-  private PlayerBattleInfoDto mapPlayerBattleInfo(
-      List<PlayerBattlePathInfo> playerBattlePathInfos) {
+  private PlayerBattleInfoDto mapPlayerBattleInfo(PlayerBattleInfo playerBattleInfo) {
     List<PathDto> pathDtos =
-        playerBattlePathInfos.stream()
-            .map(playerBattlePathInfoMapper::mapPlayerBattleInfoToPlayerBattleInfoDto)
-            .toList();
+        playerBattleInfo.getPaths().stream().map(playerBattleInfoMapper::mapPathToPathDto).toList();
     List<UnplacedGroupDto> unplacedGroupDtos =
         groupInfoRepository.findByNodeIsNullAndOwner(UnitOwner.PLAYER).stream()
-            .map(this::mapUnplacedGroup)
+            .map(playerBattleInfoMapper::mapUnplacedGroupInfoToUnplacedGroupDto)
             .toList();
 
     return new PlayerBattleInfoDto()
+        .withTurnCount(playerBattleInfo.getTurnCount())
         .withPathDtos(pathDtos)
         .withUnplacedGroupDtos(unplacedGroupDtos);
-  }
-
-  private UnplacedGroupDto mapUnplacedGroup(GroupInfo groupInfo) {
-    return new UnplacedGroupDto()
-        .withGroupInfoDto(playerBattlePathInfoMapper.mapGroupInfo(groupInfo))
-        .withCount(groupInfo.getCount() == null ? null : groupInfo.getCount().longValue());
   }
 }

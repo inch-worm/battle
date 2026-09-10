@@ -9,7 +9,7 @@
 		http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
 		http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
     <changeSet id="initial_table_setup_battle" author="inchworm">
-        <createTable tableName="player_battle_path_info">
+        <createTable tableName="player_battle_info">
             <column name="id" type="uuid">
                 <constraints primaryKey="true"/>
             </column>
@@ -18,16 +18,32 @@
                 <constraints nullable="false"/>
             </column>
 
+            <column name="turn_count" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="player_hp" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="path">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true"/>
+            </column>
+
+            <column name="player_battle_info_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+
             <column name="name" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
         <addForeignKeyConstraint
-                baseTableName="player_battle_path_info"
-                baseColumnNames="player_id"
-                referencedTableName="player"
+                baseTableName="path"
+                baseColumnNames="player_battle_info_id"
+                referencedTableName="player_battle_info"
                 referencedColumnNames="id"
-                constraintName="fk_path_player"/>
+                constraintName="fk_path_player_battle_info"/>
 
         <createTable tableName="node">
             <column name="id" type="uuid">
@@ -39,11 +55,12 @@
             <column name="x_coordinate" type="int"/>
             <column name="y_coordinate" type="int"/>
             <column name="is_root" type="boolean" defaultValueBoolean="false"/>
-            <column name="is_leaf" type="boolean" defaultValueBoolean="false"/>        </createTable>
+            <column name="is_leaf" type="boolean" defaultValueBoolean="false"/>
+        </createTable>
         <addForeignKeyConstraint
                 baseTableName="node"
                 baseColumnNames="path_id"
-                referencedTableName="player_battle_path_info"
+                referencedTableName="path"
                 referencedColumnNames="id"
                 constraintName="fk_node_path"/>
 
@@ -68,7 +85,7 @@
         <addForeignKeyConstraint
                 baseTableName="edge"
                 baseColumnNames="path_id"
-                referencedTableName="player_battle_path_info"
+                referencedTableName="path"
                 referencedColumnNames="id"
                 constraintName="fk_edge_path"/>
 

@@ -21,7 +21,7 @@ public class Edge {
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "path_id", nullable = false)
-  private PlayerBattlePathInfo path;
+  private Path path;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "from_node_id", nullable = false)

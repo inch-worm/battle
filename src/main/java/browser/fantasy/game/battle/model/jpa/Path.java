@@ -16,16 +16,16 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "player_battle_path_info")
-public class PlayerBattlePathInfo {
+@Table(name = "path")
+public class Path {
 
   @Id
   @Column(name = "id", nullable = false)
   private UUID id;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "player_id", nullable = false)
-  private Player player;
+  @JoinColumn(name = "player_battle_info_id", nullable = false)
+  private PlayerBattleInfo playerBattleInfo;
 
   @Column(name = "name", nullable = false)
   private String name;

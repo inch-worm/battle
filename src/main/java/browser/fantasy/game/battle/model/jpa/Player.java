@@ -21,7 +21,4 @@ public class Player {
 
   @Column(name = "password", nullable = false)
   private String password;
-
-  @Column(name = "hp", nullable = false)
-  private Integer hp;
 }

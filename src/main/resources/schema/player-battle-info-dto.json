@@ -47,6 +47,9 @@
     }
   },
   "properties": {
+    "turnCount": {
+      "type": "integer"
+    },
     "pathDtos": {
       "type": "array",
       "items": {
