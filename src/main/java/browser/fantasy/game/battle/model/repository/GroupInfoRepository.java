@@ -9,4 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface GroupInfoRepository extends JpaRepository<GroupInfo, UUID> {
 
   List<GroupInfo> findByNodeIsNullAndOwner(UnitOwner owner);
+
+  List<GroupInfo> findByNodeIsNullAndOwnerAndTurnCountToAppear(
+      UnitOwner owner, Long turnCountToAppear);
 }

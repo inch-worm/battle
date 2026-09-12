@@ -38,6 +38,9 @@ public class GroupInfo {
   @Column(name = "count")
   private Integer count;
 
+  @Column(name = "turn_count_to_appear")
+  private Integer turnCountToAppear;
+
   @Enumerated(EnumType.STRING)
   @Column(name = "owner", length = 50)
   private UnitOwner owner;

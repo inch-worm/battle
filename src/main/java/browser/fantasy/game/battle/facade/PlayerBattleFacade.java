@@ -1,4 +1,4 @@
-package browser.fantasy.game.battle.service;
+package browser.fantasy.game.battle.facade;
 
 import browser.fantasy.game.battle.PathDto;
 import browser.fantasy.game.battle.PlayerBattleInfoDto;
@@ -7,6 +7,10 @@ import browser.fantasy.game.battle.UnplacedGroupDto;
 import browser.fantasy.game.battle.mapper.PlayerBattleInfoMapper;
 import browser.fantasy.game.battle.model.jpa.*;
 import browser.fantasy.game.battle.model.repository.GroupInfoRepository;
+import browser.fantasy.game.battle.service.PlayerBattleCombatService;
+import browser.fantasy.game.battle.service.PlayerBattleEnemiesSpawnService;
+import browser.fantasy.game.battle.service.PlayerBattleMovementService;
+import browser.fantasy.game.battle.service.PlayerBattleService;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +25,7 @@ public class PlayerBattleFacade {
   private final PlayerBattleService playerBattleService;
   private final PlayerBattleMovementService playerBattleMovementService;
   private final PlayerBattleCombatService playerBattleCombatService;
+  private final PlayerBattleEnemiesSpawnService playerBattleEnemiesSpawnService;
   private final PlayerBattleInfoMapper playerBattleInfoMapper;
   private final GroupInfoRepository groupInfoRepository;
 
@@ -28,11 +33,13 @@ public class PlayerBattleFacade {
       PlayerBattleService playerBattleService,
       PlayerBattleMovementService playerBattleMovementService,
       PlayerBattleCombatService playerBattleCombatService,
+      PlayerBattleEnemiesSpawnService playerBattleEnemiesSpawnService,
       PlayerBattleInfoMapper playerBattleInfoMapper,
       GroupInfoRepository groupInfoRepository) {
     this.playerBattleService = playerBattleService;
     this.playerBattleMovementService = playerBattleMovementService;
     this.playerBattleCombatService = playerBattleCombatService;
+    this.playerBattleEnemiesSpawnService = playerBattleEnemiesSpawnService;
     this.playerBattleInfoMapper = playerBattleInfoMapper;
     this.groupInfoRepository = groupInfoRepository;
   }
@@ -72,6 +79,7 @@ public class PlayerBattleFacade {
             .flatMap(playerBattlePathInfo -> playerBattlePathInfo.getNodes().stream())
             .collect(Collectors.toMap(Node::getId, Function.identity()));
     playerBattleMovementService.placePlayerUnits(allNodesById, unitPlacementRequest);
+    playerBattleEnemiesSpawnService.spawnEnemyGroups(paths, playerBattleInfo.getTurnCount());
     playerBattleInfo.setTurnCount(playerBattleInfo.getTurnCount() + 1);
     return mapPlayerBattleInfo(playerBattleInfo);
   }

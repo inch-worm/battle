@@ -287,6 +287,7 @@
             <column name="id" value="dddddddd-dddd-dddd-dddd-000000000102"/>
             <column name="unit_type" value="CAVALRY"/>
             <column name="count" valueNumeric="4"/>
+            <column name="turn_count_to_appear" valueNumeric="1"/>
             <column name="owner" value="ENEMY"/>
         </insert>
     </changeSet>

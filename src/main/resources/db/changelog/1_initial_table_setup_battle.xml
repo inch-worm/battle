@@ -131,7 +131,6 @@
             </column>
             <column name="count" type="int"/>
             <column name="owner" type="varchar(50)"/>
-            <column name="path_id_to_appear" type="uuid"/>
             <column name="turn_count_to_appear" type="int"/>
         </createTable>
 

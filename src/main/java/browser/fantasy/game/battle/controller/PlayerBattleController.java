@@ -2,7 +2,7 @@ package browser.fantasy.game.battle.controller;
 
 import browser.fantasy.game.battle.PlayerBattleInfoDto;
 import browser.fantasy.game.battle.UnitPlacementRequest;
-import browser.fantasy.game.battle.service.PlayerBattleFacade;
+import browser.fantasy.game.battle.facade.PlayerBattleFacade;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
